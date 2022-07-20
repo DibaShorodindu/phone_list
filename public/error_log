@@ -1,0 +1,25 @@
+[13-Jun-2022 06:53:28 UTC] PHP Warning:  require(/home/phonelist/public_html/public/vendor/autoload.php): Failed to open stream: No such file or directory in /home/phonelist/public_html/public/index.php on line 34
+[13-Jun-2022 06:53:28 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/phonelist/public_html/public/vendor/autoload.php' (include_path='.:/opt/cpanel/ea-php81/root/usr/share/pear') in /home/phonelist/public_html/public/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home/phonelist/public_html/public/index.php on line 34
+[30-Jun-2022 07:06:51 UTC] PHP Warning:  require(/home/phonelist/public_html/public./vendor/autoload.php): Failed to open stream: No such file or directory in /home/phonelist/public_html/public/index.php on line 34
+[30-Jun-2022 07:06:51 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/phonelist/public_html/public./vendor/autoload.php' (include_path='.:/opt/cpanel/ea-php81/root/usr/share/pear') in /home/phonelist/public_html/public/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home/phonelist/public_html/public/index.php on line 34
+[30-Jun-2022 08:48:39 UTC] PHP Warning:  require(/home/phonelist/public_html/public./vendor/autoload.php): Failed to open stream: No such file or directory in /home/phonelist/public_html/public/index.php on line 34
+[30-Jun-2022 08:48:39 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/phonelist/public_html/public./vendor/autoload.php' (include_path='.:/opt/cpanel/ea-php81/root/usr/share/pear') in /home/phonelist/public_html/public/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home/phonelist/public_html/public/index.php on line 34
+[30-Jun-2022 10:37:46 UTC] PHP Warning:  require(/home/phonelist/public_html/public./vendor/autoload.php): Failed to open stream: No such file or directory in /home/phonelist/public_html/public/index.php on line 34
+[30-Jun-2022 10:37:46 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/phonelist/public_html/public./vendor/autoload.php' (include_path='.:/opt/cpanel/ea-php81/root/usr/share/pear') in /home/phonelist/public_html/public/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home/phonelist/public_html/public/index.php on line 34
+[02-Jul-2022 03:18:31 UTC] PHP Warning:  require(/home/phonelist/public_html/public./vendor/autoload.php): Failed to open stream: No such file or directory in /home/phonelist/public_html/public/index.php on line 34
+[02-Jul-2022 03:18:31 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/phonelist/public_html/public./vendor/autoload.php' (include_path='.:/opt/cpanel/ea-php81/root/usr/share/pear') in /home/phonelist/public_html/public/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home/phonelist/public_html/public/index.php on line 34
