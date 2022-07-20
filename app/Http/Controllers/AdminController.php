@@ -13,7 +13,7 @@ use App\Models\PurchasePlan;
 use App\Models\SetPurchasePlan;
 use Auth;
 use Carbon\Carbon;
-use DB;
+// use DB;
 use Exception;
 use Hash;
 use Illuminate\Database\Eloquent\Model;
@@ -28,9 +28,14 @@ use App\Models\PhoneListSetup;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\DB;
 // use Bus;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class AdminController extends Controller
 {
@@ -191,14 +196,31 @@ class AdminController extends Controller
 
 
 
-            //  admin Dashboard view all data // data edit update delete
+    //  admin Dashboard view all data // data edit update delete
+    public function paginate($items, $perPage = 10, $page = null, $options = [])
+    {
+        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+        $items = $items instanceof Collection ? $items : Collection::make($items);
+        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
+    }
 
 
     public function manageData(){
-        //dd('hello');
-        $this->allData = PhoneList::paginate(10);
-        $rowCount = PhoneList::count();
-        return view('admin.manage-data', ['allData' => $this->allData, 'rowcount' => $rowCount]);
+        // $this->allData = PhoneList::paginate(10);
+
+        $allData = [];
+        $rowCount = 0;
+        $tables = PhoneListSetup::pluck('table_name')->all();
+    
+        foreach ($tables as $key => $value) {
+            $data = DB::table($value)->get();
+            $rowCount += count($data);
+            array_push($allData, $data);
+        }
+        $allData = $this->paginate($allData[0]);
+        $allData->withPath('view-all');
+        // $rowCount = PhoneList::count();
+        return view('admin.manage-data', ['allData' => $allData, 'rowcount' => $rowCount]);
     }
     public function editPhoneListData(Request $request){
         PhoneList::updatePhoneList($request);
