@@ -354,6 +354,29 @@
 
                             <div class="contact-details__box row mt-5">
                                 <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
+                                <div class="circle-element">
+                                    <i class="bi bi-person-lines-fill"></i>
+                                </div>
+                                </div>
+            
+                                <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
+                                    <div class="contact-details--text col-lg-5 col-md-7 col-sm-6 mb-2">
+                                        <span>Age</span>
+                                        <p style="color: #5d6a7e">
+                                            @if(!empty($data->age))
+                                            {{ $data->age}} years
+                                        @else
+                                            N/A
+                                        @endif
+                                        </p>
+                                    </div>
+            
+                                <div class="col-lg-3"></div>
+                                </div>
+                            </div>
+
+                            <div class="contact-details__box row mt-5">
+                                <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
                                     <div class="circle-element">
                                         <i class="bi bi-gender-ambiguous"></i>
                                     </div>
@@ -592,7 +615,7 @@
             <div class="col-lg-4">
                 <!-- START PERSON SIMILAR CONTACTS -->
                 <section
-                        class="section-similar-contacts user-details-div m-4 mt-lg-4 mt-0"
+                        class="section-similar-contacts user-details-div ms-lg-4 mt-lg-5 mt-0 mb-lg-0 mb-5"
                 >
                     <div class="card user-details-div__card u-box-shadow-1">
                         <h3 class="card-title">Similar Contacts</h3>
