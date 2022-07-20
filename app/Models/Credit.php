@@ -84,4 +84,20 @@ class Credit extends Model
         self::$credit->useableCredit  = $usableCredit+$request->credit;
         self::$credit->save();
     }
+
+    public static function filterCredit()
+    {
+        self::$credit = Credit::where('userId',Auth::user()->id)->first();
+        $usableCredit = self::$credit->useableCredit;
+        self::$credit->userId = Auth::user()->id;
+        self::$credit->useableCredit = $usableCredit - 1;
+        self::$credit->save();
+
+        $user = PhoneListUserModel::find(Auth::user()->id);
+        $user->update([
+            'useAbleCredit' => self::$credit->useableCredit,
+        ]);
+    }
+
+
 }

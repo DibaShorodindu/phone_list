@@ -219,7 +219,17 @@ class AdminController extends Controller
     public function customExport(Request $request)
     {
         $credit=Credit::where('userId',Auth::user()->id)->first();
-        if ($credit->useableCredit >= count($request->chk))
+        $allDataIds = DownloadedList::where('userId', Auth::user()->id)->get();
+        $getdownloadedIds = 0;
+        foreach ($allDataIds as $dataIds)
+        {
+
+            $getdownloadedIds = $getdownloadedIds.','.$dataIds->downloadedIds;
+        }
+        $preDownloaded = count($request->chk) - (count(array_intersect($request->chk, explode(',',$getdownloadedIds ))));
+
+
+        if ($credit->useableCredit >= $preDownloaded)
         {
             Credit::updateUserCradit($request);
             ExportHistori::newExportHistori($request);
