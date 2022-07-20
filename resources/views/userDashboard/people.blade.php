@@ -345,14 +345,30 @@
                         Age
                     </div>
                     <div class="dropdown" id="searchAge">
-                        <input
-                                class="searchBar text-dark fw-normal col-12"
-                                id="ageInput"
-                                type="text"
-                                placeholder="Search by age..."
-                                data-toggle="dropdown"
-                                data-bs-toggle="dropdown"
-                        />
+                        @if (isset($age))
+                            <input
+                                    class="searchBar text-dark fw-normal col-12"
+                                    id="ageInput"
+                                    type="number"
+                                    placeholder="Search by age..."
+                                    data-toggle="dropdown"
+                                    data-bs-toggle="dropdown"
+                                    autocomplete="off"
+                                    name="age"
+                                    value="{{ $age }}"
+                            />
+                        @else
+                            <input
+                                    class="searchBar text-dark fw-normal col-12"
+                                    id="ageInput"
+                                    type="number"
+                                    placeholder="Search by age..."
+                                    data-toggle="dropdown"
+                                    data-bs-toggle="dropdown"
+                                    autocomplete="off"
+                                    name="age"
+                            />
+                        @endif
 
                         <ul
                                 class="dropdown-menu bg-white text-dark fw-bold p-3"
@@ -371,7 +387,7 @@
                                 <button class="ageBtn04" type="submit" value="50">50</button>
                             </li>
                             <li class="dropdown-item">
-                                <button class="ageBtn05" type="submit" value="60+">
+                                <button class="ageBtn05" type="submit" value="100">
                                     60+
                                 </button>
                             </li>
@@ -540,6 +556,7 @@
                                             </th>
 
                                             <th>Name</th>
+                                            <th>Age</th>
                                             <th>Work Place</th>
                                             <th>Country</th>
                                             <th>Quick Actions</th>
@@ -563,6 +580,12 @@
                                                     </a>
                                                 </td>
                                                 <td>
+                                                    @if(!empty( $data->age ))
+                                                        {{ $data->age }}
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </td><td>
                                                     @if(!empty( $data->work ))
                                                         {{ ucwords($data->work)}}
                                                     @else
@@ -1123,67 +1146,6 @@
         });
     });
 </script>
-
-
-{{--<script>
-    if ( document.getElementById('countryDropdown').value != null )
-    {
-        let country = document.getElementById('countryDropdown').value;
-
-        let wrapper = $('#search'); //Input field wrapper
-        let fieldHTML = '<input type="text" name="countryFromInput" value="'+country+'"/>';
-        $(wrapper).append(fieldHTML);
-
-        let wrapper2 = $('#searchLocation'); //Input field wrapper
-        $(wrapper2).append(fieldHTML);
-
-        let wrapper3 = $('#searchHometown'); //Input field wrapper
-        $(wrapper3).append(fieldHTML);
-    }
-    if ( document.getElementById('hometown').value != null )
-    {
-        let hometown = document.getElementById('hometown').value;
-        let wrapper4 = $('#search'); //Input field wrapper
-        let fieldHTML2 = '<input type="text" name="hometownFromInput" value="'+hometown+'"/>';
-        $(wrapper4).append(fieldHTML2);
-
-        let wrapper5 = $('#searchLocation'); //Input field wrapper
-        $(wrapper5).append(fieldHTML2);
-
-        let wrapper6 = $('#searchCountry'); //Input field wrapper
-        $(wrapper6).append(fieldHTML2);
-
-    }
-    if ( document.getElementById('location').value != null )
-    {
-        let location = document.getElementById('location').value;
-        let wrapper7 = $('#search'); //Input field wrapper
-        let fieldHTML3 = '<input type="text" name="locationFromInput" value="'+location+'"/>';
-        $(wrapper7).append(fieldHTML3);
-
-        let wrapper8 = $('#searchHometown'); //Input field wrapper
-        $(wrapper8).append(fieldHTML3);
-
-        let wrapper9 = $('#searchCountry'); //Input field wrapper
-        $(wrapper9).append(fieldHTML3);
-
-    }
-    if ( document.getElementById('searchPeopleFromPhoneList').value != null )
-    {
-        let searchPeopleFromPhoneList = document.getElementById('searchPeopleFromPhoneList').value;
-        let wrapper10 = $('#searchLocation'); //Input field wrapper
-        let fieldHTML = '<input type="text" name="nameFromInput" value="'+searchPeopleFromPhoneList+'"/>';
-        $(wrapper10).append(fieldHTML4);
-
-        let wrapper11 = $('#searchHometown'); //Input field wrapper
-        $(wrapper11).append(fieldHTML4);
-
-        let wrapper12 = $('#searchCountry'); //Input field wrapper
-        $(wrapper12).append(fieldHTML4);
-    }
-
-
-</script>--}}
 
 </body>
 </html>

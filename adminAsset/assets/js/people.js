@@ -61,9 +61,9 @@ document
     relationshipInput.value = document.querySelector('.complicatedBtn').value;
   });
 
-document.querySelector('.countryBtn01').addEventListener('click', function () {
+/*document.querySelector('.countryBtn01').addEventListener('click', function () {
   countryInput.value = document.querySelector('.countryBtn01').value;
-});
+});*/
 
 document.querySelector('.ageBtn01').addEventListener('click', function () {
   ageInput.value = document.querySelector('.ageBtn01').value;
