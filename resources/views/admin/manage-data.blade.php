@@ -71,7 +71,7 @@
                             @foreach($allDataName as $data)
                                 <tr class="table-row">
                                     <td scope="row" class="name">
-                                        <a href=""> {{ $data->name }} </a>
+                                        <a href=""> {{ $data->full_name }} </a>
                                     </td>
                                     <td> {{$data->phone }} </td>
                                     <td> {{ $data->email }} </td>
@@ -241,7 +241,7 @@
                             @foreach($allData as $data)
                                 <tr class="table-row">
                                     <td scope="row" class="name">
-                                        <a href=""> {{ $data->name }} </a>
+                                        <a href=""> {{ $data->full_name }} </a>
                                     </td>
                                     <td> {{$data->phone }} </td>
                                     <td> {{ $data->email }} </td>

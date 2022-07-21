@@ -17,7 +17,8 @@
             <nav style="--bs-breadcrumb-divider: '>'" aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('/') }}">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">People</li>
+                    <li class="breadcrumb-item"><a href="{{ route('category', ['id' => 'A'])  }}">People</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ $dataId }}</li>
                 </ol>
             </nav>
         </div>

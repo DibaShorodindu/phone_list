@@ -265,17 +265,21 @@ class AdminController extends Controller
     public function peopleSearch(Request $request)
     {
         //dd($request->search);
+        if ($request->search == null)
+        {
+            return redirect()->back();
+        }
         $result = $request->search;
         $this->allData = DB::table('phone_lists')
             ->where('first_name', '=',  $result)
             ->orWhere('last_name', '=',  $result)
-            ->orWhere('name', '=',  $result)
-            ->orderBy('name', 'ASC')
+            ->orWhere('full_name', '=',  $result)
+            ->orderBy('full_name', 'ASC')
             ->paginate(15);
         $rowCount = DB::table('phone_lists')
             ->where('first_name', '=',  $result)
             ->orWhere('last_name', '=',  $result)
-            ->orWhere('name', '=',  $result)
+            ->orWhere('full_name', '=',  $result)
             ->count();
         return view('admin.manage-data', ['allDataName' => $this->allData, 'res' => $result, 'rowcount' => $rowCount]);
     }
