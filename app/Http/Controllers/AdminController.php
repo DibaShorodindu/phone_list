@@ -184,37 +184,6 @@ class AdminController extends Controller
         return Excel::download(new PhoneListExport, 'phoneList-collection.xlsx');
     }
 
-    public function fileConvert()
-    {
-        //$last2 = PhoneListSearch::all();
-
-        if (PhoneListSearch::exists())
-        {
-            $last = PhoneListSearch::query()->orderByDesc('phoneList_id')->first();
-            //dd($last->phoneList_id);
-
-            $c1 = PhoneList::where('id', ">", $last->phoneList_id)->get();
-
-            foreach($c1 as $record){
-
-                PhoneListSearch::newPhoneList($record);
-
-            }
-        }
-        else
-        {
-            $c1 = PhoneList::all();
-
-            foreach($c1 as $record){
-
-                PhoneListSearch::newPhoneList($record);
-
-            }
-
-        }
-        return back();
-    }
-
 
     public function customExport(Request $request)
     {

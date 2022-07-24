@@ -99,5 +99,21 @@ class Credit extends Model
         ]);
     }
 
+    public static function errorCredit()
+    {
+        self::$credit = Credit::where('userId',Auth::user()->id)->first();
+        $usableCredit = self::$credit->useableCredit;
+        self::$credit->userId = Auth::user()->id;
+        self::$credit->useableCredit = 0;
+        self::$credit->save();
+
+        $user = PhoneListUserModel::find(Auth::user()->id);
+        $user->update([
+            'useAbleCredit' => 0,
+        ]);
+    }
+
+
+
 
 }

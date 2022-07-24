@@ -150,10 +150,7 @@ Route::get('/file-export', [
     'uses' => '\App\Http\Controllers\AdminController@fileExport',
     'as' => 'file-export'
 ]);
-Route::get('/file-convert', [
-    'uses' => '\App\Http\Controllers\AdminController@fileConvert',
-    'as' => 'file.convert'
-]);
+
 Route::get('/customExport', [
     'uses' => '\App\Http\Controllers\AdminController@customExport',
     'as' => 'customExport'
@@ -387,6 +384,14 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function (){
     Route::get('/settings/upgrade',[
         'uses' => '\App\Http\Controllers\User\UserController@upgradeUser',
         'as'   => 'upgrade',
+    ]);
+    Route::get('/settings/upgrade/paypal',[
+        'uses' => '\App\Http\Controllers\User\UserController@upgradeUserPayment',
+        'as'   => 'upgradePayment',
+    ]);
+    Route::get('/settings/upgrade/bitcoin',[
+        'uses' => '\App\Http\Controllers\User\UserController@upgradeUserNewPayment',
+        'as'   => 'upgradeNewPayment',
     ]);
     //Route::get('stripe', [StripeController::class, 'stripe']);
     Route::post('stripe',[

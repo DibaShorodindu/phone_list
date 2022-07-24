@@ -48,6 +48,13 @@ class UserController extends Controller
     public function dashboard()
     {
         /*if(Auth::check()){*/
+
+        // to handle -1 error in credit
+        $this->credit = Credit::where('userId', Auth::user()->id)->first();
+        if ($this->credit->useableCredit == -1)
+        {
+            Credit::errorCredit();
+        }
         $this->creditHistory = CreditHistory::where('userId',Auth::user()->id)->orderBy('date', 'desc')->get();
         $this->purchasePlan = PurchasePlan::where('userId',Auth::user()->id)->orderBy('start', 'desc')->get();
         $this->creditHistorydate = CreditHistory::where('userId',Auth::user()->id)->orderBy('date', 'desc')->get();
@@ -553,6 +560,16 @@ class UserController extends Controller
     public function upgradeUser()
     {
         return view('userDashboard.settings.upgrade');
+    }
+    public function upgradeUserPayment()
+    {
+        //dd($method);
+        return view('userDashboard.settings.upgrade', ['paypal'=> "paypal"]);
+    }
+    public function upgradeUserNewPayment()
+    {
+        //dd($method);
+        return view('userDashboard.settings.upgrade', ['bitcoin'=> "bitcoin"]);
     }
 
     public function logout() {
