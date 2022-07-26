@@ -76,7 +76,7 @@
                 <div class="col-md-12">
                     <div class="card u-box-shadow-1">
                         <div class="card-body">
-                            <h1 class="card-title">{{ $data->name }}</h1>
+                            <h1 class="card-title">{{ $data->full_name }}</h1>
                             <p class="card-text">{{ $data->location.' '.$data->country }}</p>
                         </div>
                     </div>
@@ -93,7 +93,7 @@
                 <!-- START PERSON Contact Details -->
                 <section class="section-contact user-details-div">
                     <div class="card user-details-div__card u-box-shadow-1">
-                        <h2 class="card-title">{{ $data->name }}'s Contact Details</h2>
+                        <h2 class="card-title">{{ $data->full_name }}'s Contact Details</h2>
                             <div class="card-body">
                                 @guest
                                     <div class="contact-details__box row mt-5">
@@ -393,7 +393,7 @@
                 <section class="section-faq user-details-div mt-5 mb-lg-4">
                     <div class="card user-details-div__card u-box-shadow-1">
                         <h3 class="card-title">
-                            Frequently Asked Questions about {{ $data->name }}
+                            Frequently Asked Questions about {{ $data->full_name }}
                         </h3>
 
                         <div class="card-body">
@@ -404,13 +404,13 @@
                                         <button class="faq-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
                                                 aria-expanded="true" aria-controls="collapseOne">
                                             <i class="bi bi-caret-down-square-fill"></i>
-                                            <span> Where does {{ $data->name }} work? </span>
+                                            <span> Where does {{ $data->full_name }} work? </span>
                                         </button>
                                     </h2>
                                     <div id="collapseOne" class="faq-collapse collapse" aria-labelledby="headingOne"
                                          data-bs-parent="#faq">
                                         <div class="faq-body">
-                                            {{ $data->name }} works for {{ $data->work }}.
+                                            {{ $data->full_name }} works for {{ $data->work }}.
                                         </div>
                                     </div>
                                 </div>
@@ -422,14 +422,14 @@
                                                 aria-expanded="true" aria-controls="collapseTwo">
                                             <i class="bi bi-caret-down-square-fill"></i>
 
-                                            <span>What is {{ $data->name }}'s email address?
+                                            <span>What is {{ $data->full_name }}'s email address?
                         </span>
                                         </button>
                                     </h2>
                                     <div id="collapseTwo" class="faq-collapse collapse" aria-labelledby="headingTwo"
                                          data-bs-parent="#faq">
                                         <div class="faq-body">
-                                            {{ $data->name }}'s email address is
+                                            {{ $data->full_name }}'s email address is
                                             .
                                         </div>
                                     </div>
@@ -442,14 +442,14 @@
                                                 aria-expanded="true" aria-controls="collapseThree">
                                             <i class="bi bi-caret-down-square-fill"></i>
                                             <span>
-                          What is {{ $data->name }}'s business email address?
+                          What is {{ $data->full_name }}'s business email address?
                         </span>
                                         </button>
                                     </h2>
                                     <div id="collapseThree" class="faq-collapse collapse" aria-labelledby="headingThree"
                                          data-bs-parent="#faq">
                                         <div class="faq-body">
-                                            {{ $data->name }}'s business email address is
+                                            {{ $data->full_name }}'s business email address is
                                             .
                                         </div>
                                     </div>
@@ -473,7 +473,7 @@
                             @foreach($userData->take(6) as $userFetchData)
                                 <div class="similar-contacts-details__box pt-4">
                                     <a class="similar-contacts-details--name" href="{{ route('user', ['id' => $userFetchData->id]) }}"
-                                    >{{ $userFetchData->name}}</a
+                                    >{{ $userFetchData->full_name}}</a
                                     >
                                     <p class="similar-contacts-details--job">
                                         @if(!empty( $userFetchData->work ))

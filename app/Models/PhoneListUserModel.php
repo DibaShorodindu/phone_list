@@ -55,7 +55,7 @@ class PhoneListUserModel extends Authenticatable
     {
 
         self::$user = PhoneListUserModel::find($id);
-        self::$credit = Credit::find($id);
+        self::$credit = Credit::where('userId', $id)->first();
         $usableCredit = self::$credit->useableCredit;
         self::$user->update([
             'useAbleCredit' => $usableCredit,
@@ -66,7 +66,7 @@ class PhoneListUserModel extends Authenticatable
     {
 
         self::$user = PhoneListUserModel::find($id);
-        self::$credit = Credit::find($id);
+        self::$credit = Credit::where('userId', $id)->first();
         $usableCredit = self::$credit->useableCredit;
         self::$user->update([
             'purchasePlan' => $request->plan,

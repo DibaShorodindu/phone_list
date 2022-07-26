@@ -85,8 +85,8 @@ class StripeController extends Controller
     }
     public static function invoice($request)
     {
-        self::$user = PhoneListUserModel::where('id',$request->userId)->get();
-        self::$card = Card::where('userId', $request->userId)->first();
+        self::$user = PhoneListUserModel::where('id',Auth::user()->id)->get();
+        self::$card = Card::where('userId', Auth::user()->id)->first();
         foreach (self::$user as $userInfo){
             $data["name"] = $userInfo->firstName.' '.$userInfo->lastName;
             $data["email"] = $userInfo->email;
@@ -118,7 +118,7 @@ class StripeController extends Controller
         $pdf = PDF::loadView('myTestMail', $data)->setOptions(['defaultFont' => 'sans-serif']);
 
         Mail::send('myTestMail', $data, function($message)use($data, $pdf) {
-            $message->to($data["email"], $data["email"])
+            $message->to($data["email"])
                 ->subject($data["title"])
                 ->attachData($pdf->output(), "invoice.pdf");
         });

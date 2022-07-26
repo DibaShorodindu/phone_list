@@ -2,16 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="195c716c-338c-476f-a757-d1e2532142da" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/PhoneList.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/PhoneList.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/AdminController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/AdminController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/User/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/User/UserController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PublicController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PublicController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/User/Payment/StripeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/User/Payment/StripeController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/User/Searching/Combination.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/User/Searching/Combination.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Models/Credit.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Credit.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/PhoneListUserModel.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/PhoneListUserModel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2022_01_22_073127_create_phone_lists_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2022_01_22_073127_create_phone_lists_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/front/user/user.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/front/user/user.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/userDashboard/people.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/userDashboard/people.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/userDashboard/settings/plans/billing.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/userDashboard/settings/plans/billing.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/userDashboard/settings/upgrade.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/userDashboard/settings/upgrade.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/userDashboard/user/user.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/userDashboard/user/user.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -184,6 +189,7 @@
       <path value="$PROJECT_DIR$/vendor/sebastian/resource-operations" />
       <path value="$PROJECT_DIR$/vendor/sebastian/object-enumerator" />
       <path value="$PROJECT_DIR$/vendor/sebastian/object-reflector" />
+      <path value="$PROJECT_DIR$/vendor/laravel-crypto-payment-gateway/images" />
     </include_path>
   </component>
   <component name="ProjectId" id="2CF2tAlT2G8BFRTmWBiprkxLNnG" />
@@ -195,9 +201,15 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Lidata" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\xampp\htdocs\PhoneList\vendor" />
+      <recent name="E:\xampp\htdocs\PhoneList\vendor\victorybiz\laravel-crypto-payment-gateway\images" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration name="phpunit.xml" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
@@ -216,11 +228,25 @@
       <workItem from="1658384227462" duration="1375000" />
       <workItem from="1658387064328" duration="5514000" />
       <workItem from="1658639829509" duration="3912000" />
-      <workItem from="1658644623452" duration="6234000" />
+      <workItem from="1658644623452" duration="9887000" />
+      <workItem from="1658730102831" duration="12010000" />
+      <workItem from="1658805369032" duration="13048000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

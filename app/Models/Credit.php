@@ -70,7 +70,7 @@ class Credit extends Model
     }
     public static function updateCredit($request)
     {
-        self::$credit = Credit::where('userId',Auth::user()->id);
+        self::$credit = Credit::where('userId',Auth::user()->id)->first();
         $usableCredit = self::$credit->useableCredit;
         self::$credit->userId         = $request->userId;
         self::$credit->useableCredit  = $usableCredit+$request->credit;
@@ -78,7 +78,7 @@ class Credit extends Model
     }
     public static function updateCreditByAdmin($request, $id)
     {
-        self::$credit = Credit::where('userId',Auth::user()->id);
+        self::$credit = Credit::where('userId',$id)->first();
         $usableCredit = self::$credit->useableCredit;
         self::$credit->userId         = $id;
         self::$credit->useableCredit  = $usableCredit+$request->credit;

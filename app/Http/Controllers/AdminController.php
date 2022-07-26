@@ -346,7 +346,7 @@ class AdminController extends Controller
     public function updateUserCredit(Request $request)
     {
         $this->user = PhoneListUserModel::find($request->id);
-        $this->credit = Credit::find($request->id);
+        $this->credit = Credit::where('userId',$request->id);
         $this->user->update([
             'useAbleCredit' => $request->useAbleCredit,
         ]);

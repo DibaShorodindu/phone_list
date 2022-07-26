@@ -185,6 +185,7 @@
 
 <main id="peopleData">
     <section class="section-user-dashboard">
+
         <!-- START SIDEBAR -->
         <section class="section-user-dashboard--sidebar">
             <div class="heading--sub py-3 ps-4 u-border-bottom">Filters</div>
@@ -192,7 +193,7 @@
             <form id="search" action="{{ route('people.search.combination') }}">
 
                 <!-- INPUT NAME -->
-                <div class="input-name u-border-bottom py-4 px-4">
+                <div class="input-name u-border-bottom py-3 px-4">
                     <div class="input-title pb-2">
                         <i class="bi bi-person-badge pe-2"></i>
                         Name
@@ -229,7 +230,7 @@
 
 
                 <!-- INPUT CURRENT ADDRESS -->
-                <div class="input-currentAdd u-border-bottom py-4 px-4">
+                <div class="input-currentAdd u-border-bottom py-3 px-4">
                     <div class="input-title pb-2">
                         <i class="bi bi-pin-map-fill"></i>
                         Current Address
@@ -261,7 +262,7 @@
                 </div>
 
                 <!-- INPUT HOMETOWN -->
-                <div class="input-hometown u-border-bottom py-4 px-4">
+                <div class="input-hometown u-border-bottom py-3 px-4">
                     <div class="input-title pb-2">
                         <i class="bi bi-house-door-fill"></i>
                         Hometown
@@ -292,7 +293,7 @@
                 </div>
 
                 <!-- INPUT COUNTRY -->
-                <div class="input-country u-border-bottom py-4 px-4">
+                <div class="input-country u-border-bottom py-3 px-4">
                     <div class="input-title pb-2">
                         <i class="bi bi-globe2 pe-2"></i>
                         Country
@@ -338,65 +339,38 @@
                     </div>
                 </div>
 
-                <!-- SELECT AGE -->
-                <div class="input-age py-4 px-4">
+                <!-- INPUT BIRTHYEAR -->
+                <div class="input-age u-border-bottom py-3 px-4">
                     <div class="input-title pb-2">
                         <i class="bi bi-person-lines-fill pe-2"></i>
-                        Age
+                        Birthyear
                     </div>
-                    <div class="dropdown" id="searchAge">
-                        @if (isset($age))
-                            <input
-                                    class="searchBar text-dark fw-normal col-12"
-                                    id="ageInput"
-                                    type="text"
-                                    placeholder="Search by age..."
-                                    data-toggle="dropdown"
-                                    data-bs-toggle="dropdown"
-                                    autocomplete="off"
-                                    name="age"
-                                    value="{{ $age }}"
-                            />
-                        @else
-                            <input
-                                    class="searchBar text-dark fw-normal col-12"
-                                    id="ageInput"
-                                    type="text"
-                                    placeholder="Search by age..."
-                                    data-toggle="dropdown"
-                                    data-bs-toggle="dropdown"
-                                    autocomplete="off"
-                                    name="age"
-                            />
-                        @endif
-
-                            <ul
-                                    class="dropdown-menu bg-white text-dark fw-bold p-3"
-                                    aria-labelledby="ageDropdown"
-                            >
-                                <li class="dropdown-item">
-                                    <button class="ageBtn01" type="submit" value="Below 20">Below 20</button>
-                                </li>
-                                <li class="dropdown-item">
-                                    <button class="ageBtn02" type="submit" value="Below 30">Below 30</button>
-                                </li>
-                                <li class="dropdown-item">
-                                    <button class="ageBtn03" type="submit" value="Below 40">Below 40</button>
-                                </li>
-                                <li class="dropdown-item">
-                                    <button class="ageBtn04" type="submit" value="Below 50">Below 50</button>
-                                </li>
-                                <li class="dropdown-item">
-                                    <button class="ageBtn05" type="submit" value="Above 60">
-                                        Above 60
-                                    </button>
-                                </li>
-                            </ul>
-                    </div>
+                    @if (isset($age))
+                        <input
+                                type="text"
+                                id='searchPeopleFromPhoneList'
+                                name="age"
+                                onkeypress="handle()"
+                                placeholder="Enter birthyear..."
+                                autocomplete="off"
+                                value="{{ $age }}"
+                        />
+                    @else
+                        <input
+                                type="text"
+                                id='searchPeopleFromPhoneList'
+                                name="age"
+                                onkeypress="handle()"
+                                placeholder="Enter birthyear..."
+                                autocomplete="off"
+                        />
+                    @endif
+                    <button type="submit" class="btn btn-purple rounded-1 w-100">
+                        Apply
+                    </button>
                 </div>
-
                 <!--INPUT GENDER-->
-                <div class="input-gender u-border-bottom py-4 px-4">
+                <div class="input-gender u-border-bottom py-3 px-4">
                     <div class="input-title pb-2">
                         <i class="bi bi-gender-ambiguous pe-2"></i>
                         Gender
@@ -446,7 +420,7 @@
                 </div>
 
                 <!-- INPUT RELATIONSHIP STATUS -->
-                <div class="input-relationship-status py-4 px-4">
+                <div class="input-relationship-status py-3 px-4">
                     <div class="input-title pb-2">
                         <i class="bi bi-heart-fill pe-2"></i>
                         Relationship Status
@@ -540,8 +514,8 @@
                     <div class="row">
                         <!-- START TABLE -->
                         <div
-                                class="section-table table-scrollable mx-5 mb-2"
-                                style="width: 75vw; overflow: auto; max-height: 90vh"
+                                class="section-table table-scrollable my-5 mb-2 ms-4"
+                                style="width: 100vw; overflow: auto; max-height: 90vh"
                         >
                             <div class="container">
                                 <div class="row">
