@@ -119,11 +119,15 @@
     width: calc(100vw - 30rem);
     height: calc(100vh - 5rem);
 
-    .selectAll {
+    .show {
+      display: inline-block !important;
+    }
+
+    .select {
       display: flex !important;
       width: max-content !important;
       color: $color-grey-dark--3 !important;
-      font-weight: 700;
+      font-weight: 600;
       font-size: 1.5rem;
       background-color: transparent !important;
 
@@ -135,7 +139,7 @@
     .section-table {
       display: flex;
       width: calc(100vw - 30rem);
-      height: calc(100vh - 22rem);
+      height: calc(100vh - 19rem);
       overflow-y: scroll;
 
       // border: 1px solid $color-grey-light--1;
@@ -162,7 +166,12 @@
 
         tr td {
           text-align: center;
+          // width: 1rem !important;
           padding: 0.5rem 1.3rem;
+          white-space: normal !important;
+          word-wrap: break-word;
+          // min-width: 20rem;
+          max-width: 20rem;
         }
       }
     }

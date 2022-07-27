@@ -41,7 +41,7 @@ class UserController extends Controller
     protected $allDataIds;
     protected $allDataIds2;
     protected $countries;
-    protected $countrySearch;
+    protected $dataAll;
 
 
 
@@ -50,6 +50,9 @@ class UserController extends Controller
         /*if(Auth::check()){*/
 
         // to handle -1 error in credit
+        $this->dataAll = DB::table('phone_lists')
+            ->whereNotNull('phone')
+            ->count();
         $this->credit = Credit::where('userId', Auth::user()->id)->first();
         if ($this->credit->useableCredit == -1)
         {
@@ -90,7 +93,7 @@ class UserController extends Controller
 
             $j++;
         }*/
-        return view('userDashboard.userDashboard',['userHistory'=> $this->creditHistory])->with('data',json_encode($dataPurchase,JSON_NUMERIC_CHECK))->with('credit',json_encode($creditPurchase,JSON_NUMERIC_CHECK))->with('day',json_encode($date,JSON_NUMERIC_CHECK));
+        return view('userDashboard.userDashboard',['userHistory'=> $this->creditHistory, 'mobile_number'=> $this->dataAll ])->with('data',json_encode($dataPurchase,JSON_NUMERIC_CHECK))->with('credit',json_encode($creditPurchase,JSON_NUMERIC_CHECK))->with('day',json_encode($date,JSON_NUMERIC_CHECK));
 
         /*}
         return redirect('/phonelistUserLogin')->with('message','Oppes! You have entered invalid credentials');*/
@@ -324,6 +327,14 @@ class UserController extends Controller
         $dataCount = DB::table('phone_lists')
             ->count();
         return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries, 'count'=>$dataCount]);
+    }
+    public function people_gender($gender)
+    {
+        $this->countries = Country::all();
+        $this->data = DB::table('phone_lists')
+            ->where('gender', '=', $gender)
+            ->paginate(200);
+        return view('front.gender', ['data'=>$this->data, 'country' => $this->countries])->with('dataId', $gender);
     }
 
 

@@ -198,16 +198,21 @@
                 <div
                         class="col-md-6 col-10 d-flex align-items-center justify-content-md-end"
                 >
-                    <form action="{{ route('exports')  }}" method="get" enctype="multipart/form-data">
-                        @csrf
-                        <button type="submit" class="btn btn-txt border-3">
-                            Visit Downloaded Data CSVs
-                            <i class="bi bi-arrow-right"></i>
-                        </button>
-                    </form>
-
+                    <row>
+                        <h3 class="mb-4 heading--main fs-2 fw-normal">
+                            <b>Total Mobile Numbers:</b> {{ $mobile_number }}
+                        </h3>
+                        <div>
+                            <form action="{{ route('exports')  }}" method="get" enctype="multipart/form-data">
+                                @csrf
+                                <button type="submit" class="btn btn-txt border-3">
+                                    Visit Downloaded Data CSVs
+                                    <i class="bi bi-arrow-right"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </row>
                 </div>
-
             </div>
         </div>
     </section>

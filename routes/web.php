@@ -232,6 +232,13 @@ Route::get('/aboutUS',[
 ]);
 
 
+
+Route::get('people/{gender}',[
+    'uses' => '\App\Http\Controllers\User\UserController@people_gender',
+    'as'   => 'people.gender',
+]);
+
+
 /** user Dashboard */
 Route::group(['middleware' => ['auth:sanctum', 'verified']], function (){
 
@@ -389,7 +396,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function (){
         'uses' => '\App\Http\Controllers\User\UserController@upgradeUserPayment',
         'as'   => 'upgradePayment',
     ]);
-    Route::get('/settings/upgrade/bitcoin',[
+    Route::get('/settings/upgrade/bitcoincash',[
         'uses' => '\App\Http\Controllers\User\UserController@upgradeUserNewPayment',
         'as'   => 'upgradeNewPayment',
     ]);

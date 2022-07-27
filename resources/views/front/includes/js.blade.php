@@ -28,8 +28,8 @@
 
 <!-- TRANSLATOR JS  -->
 <script type="text/javascript"
-    src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit2"></script>
+        src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit2"></script>
 <script src="{{ asset('/') }}/adminAsset/assets/js/translator.js"></script>
 
-!--SMARTARGET JS-->
-<script type="text/javascript" src="https://smartarget.online/loader.js?u=e3484f4d4378966f6d8ed1fc4e0cb7c21456f0f6"></script>
+<!--SMARTARGET JS-->
+<script type="text/javascript" src="https://smartarget.online/loader.js?u=094c36f73763b9f421a5295f98c19ad0a784177f"></script>

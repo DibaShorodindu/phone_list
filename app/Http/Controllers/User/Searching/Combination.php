@@ -2404,7 +2404,7 @@ class Combination extends Controller
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
-                ->where('age', 'like', '/'.$age)
+                ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'age' => $request->age, 'count' => $dataCount]);
@@ -2418,7 +2418,7 @@ class Combination extends Controller
                         ->orWhere('last_name', '=', $request->name)
                         ->orWhere('full_name', '=', "$request->name");
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2427,7 +2427,7 @@ class Combination extends Controller
                         ->orWhere('last_name', '=', $request->name)
                         ->orWhere('full_name', '=', "$request->name");
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'age' => $request->age, 'count' => $dataCount]);
@@ -2445,7 +2445,7 @@ class Combination extends Controller
                         ->orWhere('location_state', '=', ' ' . $request->location . "'")
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2457,7 +2457,7 @@ class Combination extends Controller
                         ->orWhere('location_state', '=', ' ' . $request->location . "'")
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'age' => $request->age, 'count' => $dataCount]);
@@ -2475,7 +2475,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
 
@@ -2488,7 +2488,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'hometown' => $request->hometown, 'age' => $request->age, 'count' => $dataCount]);
@@ -2499,12 +2499,12 @@ class Combination extends Controller
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('country', '=', $request->country)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
                 ->where('country', '=', $request->country)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'countries' => $request->country, 'age' => $request->age, 'count' => $dataCount]);
@@ -2516,12 +2516,12 @@ class Combination extends Controller
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'gender' => $request->gender, 'age' => $request->age, 'count' => $dataCount]);
@@ -2532,12 +2532,12 @@ class Combination extends Controller
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount]);
@@ -2560,7 +2560,7 @@ class Combination extends Controller
                         ->orWhere('location_state', '=', ' ' . $request->location . "'")
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2577,7 +2577,7 @@ class Combination extends Controller
                         ->orWhere('location_state', '=', ' ' . $request->location . "'")
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'age' => $request->age,
@@ -2601,7 +2601,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2618,7 +2618,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown, 'age' => $request->age,
@@ -2635,7 +2635,7 @@ class Combination extends Controller
                         ->orWhere('last_name', '=', $request->name)
                         ->orWhere('full_name', '=', "$request->name");
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2645,7 +2645,7 @@ class Combination extends Controller
                         ->orWhere('last_name', '=', $request->name)
                         ->orWhere('full_name', '=', "$request->name");
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
 
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
@@ -2663,7 +2663,7 @@ class Combination extends Controller
                         ->orWhere('last_name', '=', $request->name)
                         ->orWhere('full_name', '=', "$request->name");
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2673,7 +2673,7 @@ class Combination extends Controller
                         ->orWhere('last_name', '=', $request->name)
                         ->orWhere('full_name', '=', "$request->name");
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
 
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
@@ -2691,7 +2691,7 @@ class Combination extends Controller
                         ->orWhere('last_name', '=', $request->name)
                         ->orWhere('full_name', '=', "$request->name");
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2701,7 +2701,7 @@ class Combination extends Controller
                         ->orWhere('last_name', '=', $request->name)
                         ->orWhere('full_name', '=', "$request->name");
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'relationship_status' => $request->relationship_status,
@@ -2728,7 +2728,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2748,7 +2748,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown, 'age' => $request->age,
@@ -2768,7 +2768,7 @@ class Combination extends Controller
                         ->orWhere('location_state', '=', ' ' . $request->location . "'")
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2781,7 +2781,7 @@ class Combination extends Controller
                         ->orWhere('location_state', '=', ' ' . $request->location . "'")
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'countries' => $request->country, 'age' => $request->age,
@@ -2801,7 +2801,7 @@ class Combination extends Controller
                         ->orWhere('location_state', '=', ' ' . $request->location . "'")
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2814,7 +2814,7 @@ class Combination extends Controller
                         ->orWhere('location_state', '=', ' ' . $request->location . "'")
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'gender' => $request->gender, 'age' => $request->age,
@@ -2834,7 +2834,7 @@ class Combination extends Controller
                         ->orWhere('location_state', '=', ' ' . $request->location . "'")
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2847,7 +2847,7 @@ class Combination extends Controller
                         ->orWhere('location_state', '=', ' ' . $request->location . "'")
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'relationship_status' => $request->relationship_status,
@@ -2867,7 +2867,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2880,7 +2880,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'hometown' => $request->hometown, 'countries' => $request->country, 'age' => $request->age,
@@ -2900,7 +2900,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2913,7 +2913,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'hometown' => $request->hometown, 'gender' => $request->gender, 'age' => $request->age,
@@ -2933,7 +2933,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2946,7 +2946,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'hometown' => $request->hometown, 'relationship_status' => $request->relationship_status,
@@ -2959,13 +2959,13 @@ class Combination extends Controller
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'countries' => $request->country, 'gender' => $request->gender, 'age' => $request->age,
@@ -2978,13 +2978,13 @@ class Combination extends Controller
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'countries' => $request->country, 'relationship_status' => $request->relationship_status,
@@ -2997,13 +2997,13 @@ class Combination extends Controller
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'gender' => $request->gender, 'relationship_status' => $request->relationship_status,
@@ -3033,7 +3033,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3056,7 +3056,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
@@ -3080,7 +3080,7 @@ class Combination extends Controller
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
                 ->where('country', '=', $request->country)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3097,7 +3097,7 @@ class Combination extends Controller
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
                 ->where('country', '=', $request->country)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'countries' => $request->country,
@@ -3121,7 +3121,7 @@ class Combination extends Controller
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3138,7 +3138,7 @@ class Combination extends Controller
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'gender' => $request->gender,
@@ -3162,7 +3162,7 @@ class Combination extends Controller
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3179,7 +3179,7 @@ class Combination extends Controller
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location,
@@ -3203,7 +3203,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('country', '=', $request->country)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3220,7 +3220,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('country', '=', $request->country)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown, 'countries' => $request->country,
@@ -3244,7 +3244,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3261,7 +3261,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown, 'gender' => $request->gender,
@@ -3285,7 +3285,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3302,7 +3302,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown,
@@ -3320,7 +3320,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3331,7 +3331,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'countries' => $request->country, 'gender' => $request->gender,
@@ -3349,7 +3349,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3360,7 +3360,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'countries' => $request->country,
@@ -3378,7 +3378,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3389,7 +3389,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'gender' => $request->gender,
@@ -3417,7 +3417,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('country', '=', $request->country)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3438,7 +3438,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('country', '=', $request->country)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown,
@@ -3466,7 +3466,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3487,7 +3487,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown,
@@ -3515,7 +3515,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3536,7 +3536,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown,
@@ -3557,7 +3557,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3571,7 +3571,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'countries' => $request->country,
@@ -3592,7 +3592,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3606,7 +3606,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'countries' => $request->country,
@@ -3627,7 +3627,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3641,7 +3641,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'gender' => $request->gender,
@@ -3662,7 +3662,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3676,7 +3676,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'hometown' => $request->hometown, 'countries' => $request->country,
@@ -3697,7 +3697,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3711,7 +3711,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'hometown' => $request->hometown, 'countries' => $request->country,
@@ -3732,7 +3732,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3746,7 +3746,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'hometown' => $request->hometown, 'gender' => $request->gender,
@@ -3760,14 +3760,14 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'countries' => $request->country, 'gender' => $request->gender,
@@ -3800,7 +3800,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('country', '=', $request->country)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3826,7 +3826,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('country', '=', $request->country)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
@@ -3859,7 +3859,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3885,7 +3885,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
@@ -3918,7 +3918,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3944,7 +3944,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
@@ -3970,7 +3970,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3989,7 +3989,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location,
@@ -4015,7 +4015,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4034,7 +4034,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location,
@@ -4061,7 +4061,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4080,7 +4080,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location,
@@ -4107,7 +4107,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4126,7 +4126,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown,
@@ -4153,7 +4153,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4172,7 +4172,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown,
@@ -4192,7 +4192,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4204,7 +4204,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name,
@@ -4231,7 +4231,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4250,7 +4250,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown,
@@ -4280,7 +4280,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4302,7 +4302,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown,
@@ -4331,7 +4331,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4353,7 +4353,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown,
@@ -4383,7 +4383,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4405,7 +4405,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown,
@@ -4428,7 +4428,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4443,7 +4443,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location,
@@ -4467,7 +4467,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4482,7 +4482,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'hometown' => $request->hometown,
@@ -4518,7 +4518,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4545,7 +4545,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
@@ -4580,7 +4580,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4607,7 +4607,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
@@ -4642,7 +4642,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4669,7 +4669,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
@@ -4697,7 +4697,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4717,7 +4717,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'countries' => $request->country,
@@ -4745,7 +4745,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4765,7 +4765,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown, 'countries' => $request->country,
@@ -4796,7 +4796,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4819,7 +4819,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown, 'countries' => $request->country,
@@ -4855,7 +4855,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4883,7 +4883,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
@@ -4920,7 +4920,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4948,7 +4948,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                 ->where('age', 'like', '/'.$age)
+                  ->where('age', 'like', '%/'.$age)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,

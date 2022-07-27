@@ -18,7 +18,7 @@
         <section class="section-settings-billing">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-8 p-0">
+                    <div class="col-md-8 p-0 d-none">
                         <!-- START Credit Card Information -->
                         <div class="card p-4 border-0 rounded-3">
                             <div class="card-title m-0 d-flex justify-content-between align-items-center  col-12">
@@ -1571,7 +1571,7 @@
                             </div>
                             <div class="card-body col-12 p-0">
                                 <div class="d-flex justify-content-between px-5">
-                                    <form action="{{ route('paypal') }}" class="col-5" enctype="multipart/form-data" method="post">
+                                    <form action="{{ route('paypal') }}" class="col-5 d-none" enctype="multipart/form-data" method="post">
                                         @csrf
 
                                         <input hidden  type="number" name="credit" value="{{$purchasePlan->credit}}"/>
@@ -1599,7 +1599,7 @@
                                         <input hidden  type="number" name="userId" value="{{ Auth::user()->id }}"/>
                                         <input hidden  type="number" name="userID" value="{{ Auth::user()->id }}"/>
                                         <input hidden  type="text" name="plan" value="{{$purchasePlan->plan}}"/>
-                                        <input hidden  type="text" name="paidBy" value="bitcoin"/>
+                                        <input hidden  type="text" name="paidBy" value="bitcoincash"/>
                                         <input hidden type="text" name="orderID" value="1"/>
                                         <input type="hidden" name="redirect" value="{{ url()->full() }}">
 

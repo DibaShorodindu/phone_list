@@ -42,17 +42,17 @@ return [
     /**
      * Default coin
      */
-    'default_coin' => 'bitcoin',
+    'default_coin' => 'bitcoincash',
 
     /**
      * Place values from your gourl.io signup page here.
      */
     'paymentbox' => [
-        'bitcoin' => [
+        /*'bitcoin' => [
             'public_key' => env('GOURL_PAYMENTBOX_BITCOIN_PUBLIC_KEY', null),
             'private_key' => env('GOURL_PAYMENTBOX_BITCOIN_PRIVATE_KEY', null),
             'enabled' => true,
-        ],
+        ],*/
         'bitcoincash' => [
             'public_key' => env('GOURL_PAYMENTBOX_BITCOINCASH_PUBLIC_KEY', null),
             'private_key' => env('GOURL_PAYMENTBOX_BITCOINCASH_PRIVATE_KEY', null),

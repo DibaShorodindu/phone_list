@@ -236,7 +236,7 @@
                                             <span>Gender</span>
                                             <p style="color: #5d6a7e">
                                                 @if(!empty($data->gender))
-                                                    {{ $data->gender}}
+                                                    <a href="{{ route('people.gender', ['gender'=> $data->gender]) }}">{{ $data->gender}}</a>
                                                 @else
                                                     N/A
                                                 @endif

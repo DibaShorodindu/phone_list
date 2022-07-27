@@ -23,7 +23,7 @@ class LaravelCryptoPaymentGateway
     public $coins = [];
     public $enabledCoins = [];
     public $enabledCoinImages = [];
-    public $defaultCoin = 'bitcoin';
+    public $defaultCoin = 'bitcoincash';
     public $localisation = [];
     public $defaultLanguage = 'en';
     public $boxTemplate = 'compact';
