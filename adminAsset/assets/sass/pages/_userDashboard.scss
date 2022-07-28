@@ -131,6 +131,14 @@
       font-size: 1.5rem;
       background-color: transparent !important;
 
+      &-input {
+        width: 5rem;
+        height: 2rem;
+        background-color: $color-grey-light--3;
+        margin: 0 0.5rem;
+        padding: 0.2rem 0.5rem;
+      }
+
       &:hover {
         color: $color-primary !important;
       }

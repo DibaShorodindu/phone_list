@@ -248,7 +248,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function (){
         'as'   => 'loggedInUser',
     ]);
 
-    Route::get('people',[
+    Route::get('search',[
         'uses' => '\App\Http\Controllers\User\UserController@people',
         'as'   => 'people',
     ]);
