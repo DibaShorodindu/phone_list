@@ -5,7 +5,7 @@
 
 
 @section('title')
-    Product | Phone List
+    Privacy Policy | Phone List
 @endsection
 
 @section('main')
@@ -34,13 +34,13 @@
     <section class="section-legal--content u-padding-lg pt-5">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-8 col-10">
+                <div class="col-lg-8 col-md-10 col-12">
                     <div class="card border-0 p-5">
                         <div class="card-body">
                             Phone List's use of information received from Google APIs will
                             adhere to
                             <a
-                                href="https://developers.google.com/terms/api-services-user-data-policy#additional_requirements_for_specific_api_scopes"
+                                    href="https://developers.google.com/terms/api-services-user-data-policy#additional_requirements_for_specific_api_scopes"
                             >
                                 Google API Services User Data Policy </a
                             >, including the Limited Use requirements.
@@ -62,7 +62,7 @@
     <section class="section-legal--content u-padding-lg pt-5">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-8 col-10">
+                <div class="col-lg-8 col-md-10 col-12">
                     <div class="card border-0 p-5">
                         <div class="card-body">
                             Phone List's use of information received from Facebook APIs
@@ -88,7 +88,7 @@
     <section class="section-legal--content u-padding-lg bg-light">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-8 col-10">
+                <div class="col-lg-8 col-md-10 col-12">
                     <div class="card border-0 p-5">
                         <div class="card-body">
                             <p class="card-text">

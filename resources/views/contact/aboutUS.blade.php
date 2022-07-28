@@ -5,7 +5,7 @@
 
 
 @section('title')
-    Contact Us | Phone List
+    About Us | Phone List
 @endsection
 
 @section('main')
@@ -83,9 +83,9 @@
                 </div>
                 <div class="col-md-6 px-5 mt-md-0 mt-5 pt-md-0 pt-5">
                     <img
-                        class="img-fluid h-md-50"
-                        src="{{ asset('/') }}/adminAsset/assets/images/about01.svg"
-                        alt="About Us Illustration"
+                            class="img-fluid h-md-50"
+                            src="{{ asset('/') }}/adminAsset/assets/images/about01.svg"
+                            alt="About Us Illustration"
                     />
                 </div>
             </div>
@@ -99,13 +99,13 @@
             <div class="row">
                 <div class="col-md-6 px-5">
                     <iframe
-                        width="100%"
-                        height="100%"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3622.699905567123!2d89.3940830153348!3d24.771476354917976!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39fc532d765d6431%3A0xed5c968aae4aa39c!2sMajhira%20Bazaar%20Bus%20Stop!5e0!3m2!1sen!2sbd!4v1644484915823!5m2!1sen!2sbd"
-                        frameborder="0"
-                        scrolling="no"
-                        marginheight="0"
-                        marginwidth="0"
+                            width="100%"
+                            height="100%"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3622.699905567123!2d89.3940830153348!3d24.771476354917976!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39fc532d765d6431%3A0xed5c968aae4aa39c!2sMajhira%20Bazaar%20Bus%20Stop!5e0!3m2!1sen!2sbd!4v1644484915823!5m2!1sen!2sbd"
+                            frameborder="0"
+                            scrolling="no"
+                            marginheight="0"
+                            marginwidth="0"
                     ></iframe>
                 </div>
                 <div class="col-md-6 mt-md-0 mt-5 pt-md-0 pt-5">

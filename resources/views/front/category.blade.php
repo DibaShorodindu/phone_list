@@ -1,7 +1,7 @@
 @extends('front.master')
 
 @section('metaDescription')
-    List of contacts in Phone Number List's database for names starting with A
+    List of contacts in Phone Number List's database for names starting with {{ $dataId }} which can be used for telemarketing campaigns
 @endsection
 
 
@@ -45,18 +45,18 @@
                 <div class="col-md-3 col-6">
                     <div class="dropdown" id="searchCountry">
                         <input
-                            class="searchBar w-100 bg-white text-dark fw-normal"
-                            id="countryDropdown"
-                            type="text"
-                            placeholder="Search Person by Country..."
-                            data-toggle="dropdown"
-                            data-bs-toggle="dropdown"
+                                class="searchBar w-100 bg-white text-dark fw-normal"
+                                id="countryDropdown"
+                                type="text"
+                                placeholder="Search Person by Country..."
+                                data-toggle="dropdown"
+                                data-bs-toggle="dropdown"
                         />
                         <span class="caret"></span>
 
                         <ul
-                            class="dropdown-menu w-100 bg-white text-dark fw-bold p-3"
-                            aria-labelledby="countryDropdown"
+                                class="dropdown-menu w-100 bg-white text-dark fw-bold p-3"
+                                aria-labelledby="countryDropdown"
                         >
                             @foreach($country as $countries)
                                 <a class="dropdown-item" href="{{ route('country', ['id' => $countries->countryname]) }}">{{ $countries->countryname }} ({{ $countries->countrycode }}) </a>
@@ -76,7 +76,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div
-                        class="card u-box-shadow-1 border-0 u-border-radius h-100 bg-light"
+                            class="card u-box-shadow-1 border-0 u-border-radius h-100 bg-light"
                     >
                         <div class="card-body p-5">
                             <h4 class="card-title">
@@ -123,9 +123,9 @@
                         <div class="card-body d-flex align-items-center px-5 mx-5">
                             <div class="col-md-4 px-4 mx-3">
                                 <img
-                                    src="{{ asset('/') }}/adminAsset/assets/images/data.svg"
-                                    class="img-fluid"
-                                    alt="illustration"
+                                        src="{{ asset('/') }}/adminAsset/assets/images/data.svg"
+                                        class="img-fluid"
+                                        alt="illustration"
                                 />
                             </div>
                             <div class="col-md-8">
@@ -133,13 +133,13 @@
                       Reach your target contacts faster with Phone Number List
                     </span>
                                 @guest
-                                <a
-                                    href="{{ route('/phonelistUserRegister') }}"
-                                    type="button"
-                                    class="btn btn-grad px-4 mt-3"
-                                >
-                                    Sign Up For Free
-                                </a>
+                                    <a
+                                            href="{{ route('/phonelistUserRegister') }}"
+                                            type="button"
+                                            class="btn btn-grad px-4 mt-3"
+                                    >
+                                        Sign Up For Free
+                                    </a>
                                 @else
                                     <a
                                             href="{{ route('loggedInUser') }}"
@@ -177,24 +177,24 @@
                                 @forelse ($data as $allData)
                                     <a href="{{ route('user', ['id' => $allData->id ]) }}" class="user-link"
                                     >{{$allData->first_name." ".$allData->last_name }}</a>
-                                @empty
-                                    <h2 class="card-text no-data">
-                                        No Person pages found for:
-                                        <span class="text-secondary">{{ $dataId }}</span>
-                                    </h2>
+                            @empty
+                                <h2 class="card-text no-data">
+                                    No Person pages found for:
+                                    <span class="text-secondary">{{ $dataId }}</span>
+                                </h2>
                                 @endforelse
-                            </p>
-                            <div class="card-footer bg-transparent border-0">
-                                <nav aria-label="Page navigation example">
-                                    <ul class="pagination justify-content-end">
-                                        <li class="page-item">
-                                            <div class="d-flex justify-content-center">
-                                                {!! $data->links() !!}
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
+                                </p>
+                                <div class="card-footer bg-transparent border-0">
+                                    <nav aria-label="Page navigation example">
+                                        <ul class="pagination justify-content-end">
+                                            <li class="page-item">
+                                                <div class="d-flex justify-content-center">
+                                                    {!! $data->links() !!}
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -231,13 +231,13 @@
     </script>
 @endsection
 
-    {{--<script>
-        function handleName(e){
-            if(e.key === "Enter"){
-                alert("Enter was just pressed.");
-            }
-
-            return false;
+{{--<script>
+    function handleName(e){
+        if(e.key === "Enter"){
+            alert("Enter was just pressed.");
         }
-    </script>--}}
+
+        return false;
+    }
+</script>--}}
 

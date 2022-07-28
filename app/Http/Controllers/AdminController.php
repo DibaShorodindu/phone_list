@@ -187,30 +187,106 @@ class AdminController extends Controller
 
     public function customExport(Request $request)
     {
-        $credit=Credit::where('userId',Auth::user()->id)->first();
-        $allDataIds = DownloadedList::where('userId', Auth::user()->id)->get();
-        $getdownloadedIds = 0;
-        foreach ($allDataIds as $dataIds)
+        if($request->chk == null)
         {
+            $credit=Credit::where('userId',Auth::user()->id)->first();
+            $this->allDataIds = DownloadedList::where('userId', Auth::user()->id)->get();
+            $getdownloadedIds = 0;
+            foreach ($this->allDataIds as $dataIds) {
+                $getdownloadedIds = $getdownloadedIds . ',' . $dataIds->downloadedIds;
+            }
 
-            $getdownloadedIds = $getdownloadedIds.','.$dataIds->downloadedIds;
-        }
-        $preDownloaded = count($request->chk) - (count(array_intersect($request->chk, explode(',',$getdownloadedIds ))));
+            $query = DB::table('phone_lists')
+                ->whereNotIn('id', explode(',', $getdownloadedIds));
+            if (isset($request->name)!= null)
+                $query ->where('first_name', '=', $request->name)
+                    ->orWhere('last_name', '=', $request->name)
+                    ->orWhere('full_name', '=', $request->name);
 
+            if (isset($request->location)!= null)
+                $query->where('location', '=', $request->location)
+                    ->orWhere('location_city', '=', $request->location)
+                    ->orWhere('location_city', '=', ' ' . $request->location)
+                    ->orWhere('location_state', '=', ' ' . $request->location)
+                    ->orWhere('location_state', '=', ' ' . $request->location . "'")
+                    ->orWhere('location_region', '=', ' ' . $request->location);
+            if (isset($request->hometown)!= null)
+                $query->where('hometown', '=', $request->hometown)
+                    ->orwhere('hometown_city', '=', $request->hometown)
+                    ->orwhere('hometown_city', '=', ' ' . $request->hometown)
+                    ->orWhere('hometown_state', '=', ' ' . $request->hometown)
+                    ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
+                    ->orWhere('hometown_region', '=', ' ' . $request->hometown);
+            if (isset($request->country)!= null)
+                $query->where('country', '=', $request->country);
+            if (isset($request->age)!= null)
+            {
+                $validated = $request->age->validate([
+                    'age' => 'required|digits:4',
+                ]);
+                $age = $validated['age'];
+                $query->where('age', 'like', '%/'.$age);
+            }
 
-        if ($credit->useableCredit >= $preDownloaded)
-        {
-            Credit::updateUserCradit($request);
-            ExportHistori::newExportHistori($request);
-            DownloadedList::createNew($request);
-            CreditHistory::create($request);
-            PhoneListUserModel::updateUseAbleCredit($request);
+            if (isset($request->gender)!= null)
+                $query->where('gender', '=', $request->gender);
+            if (isset($request->relationship_status)!= null)
+                $query->where('relationship_status', '=', $request->relationship_status);
 
-            return (new CustomExport($request->chk))->download('phoneList.xlsx');
+            if($request->limit != null)
+            {
+                $allData = $query->orderBy('id', 'ASC')->pluck('id')->take($request->limit);
+            }
+            else
+            {
+                $allData = $query->orderBy('id', 'ASC')->pluck('id');
+            }
+            $array = $allData->toArray();
+            $preDownloaded = count($array);
+            $preDownloaded2 = $preDownloaded - (count(array_intersect($allData->toArray(), explode(',',$getdownloadedIds ))));
+
+            if ($credit->useableCredit >= $preDownloaded2)
+            {
+                Credit::allDataCradit($preDownloaded, $array);
+                ExportHistori::allDataExportHistori($preDownloaded, $allData);
+                DownloadedList::createAllNew($allData);
+                CreditHistory::createAll($preDownloaded);
+                PhoneListUserModel::updateUseAbleCredit($allData);
+
+                return (new CustomExport($allData->toArray()))->download('phoneList.xlsx');
+            }
+            else
+            {
+                return redirect('/settings/upgrade');
+            }
         }
         else
         {
-            return redirect('/settings/upgrade');
+            $credit=Credit::where('userId',Auth::user()->id)->first();
+            $allDataIds = DownloadedList::where('userId', Auth::user()->id)->get();
+            $getdownloadedIds = 0;
+            foreach ($allDataIds as $dataIds)
+            {
+
+                $getdownloadedIds = $getdownloadedIds.','.$dataIds->downloadedIds;
+            }
+            $preDownloaded = count($request->chk) - (count(array_intersect($request->chk, explode(',',$getdownloadedIds ))));
+
+
+            if ($credit->useableCredit >= $preDownloaded)
+            {
+                Credit::updateUserCradit($request);
+                ExportHistori::newExportHistori($request);
+                DownloadedList::createNew($request);
+                CreditHistory::create($request);
+                PhoneListUserModel::updateUseAbleCredit($request);
+
+                return (new CustomExport($request->chk))->download('phoneList.xlsx');
+            }
+            else
+            {
+                return redirect('/settings/upgrade');
+            }
         }
     }
 

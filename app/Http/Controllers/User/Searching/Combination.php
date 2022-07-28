@@ -64,7 +64,6 @@ class Combination extends Controller
         }
         $result = $request->name;
 
-
         if ($request->name != null && $request->location == null && $request->hometown == null
             && $request->country == null && $request->countryInputName == null && $request->gender == null && $request->relationship_status == null
             && $request->age == null) {
@@ -72,14 +71,15 @@ class Combination extends Controller
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('first_name', '=', $request->name)
                 ->orWhere('last_name', '=', $request->name)
-                ->orWhere('full_name', '=', "$request->name")
+                ->orWhere('full_name', '=', $request->name)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
+            //$searchId = $query->pluck('id');
             $dataCount = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('first_name', '=', $request->name)
                 ->orWhere('last_name', '=', $request->name)
-                ->orWhere('full_name', '=', "$request->name")
+                ->orWhere('full_name', '=', $request->name)
                 ->count();
             return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'count' => $dataCount]);
@@ -184,7 +184,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -200,7 +200,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -222,7 +222,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
@@ -238,7 +238,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
@@ -261,7 +261,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
@@ -270,7 +270,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->count();
 
@@ -286,7 +286,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
@@ -295,7 +295,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->count();
 
@@ -608,7 +608,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
                         ->orWhere('location_city', '=', $request->location)
@@ -630,7 +630,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
                         ->orWhere('location_city', '=', $request->location)
@@ -659,7 +659,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
                         ->orWhere('location_city', '=', $request->location)
@@ -675,7 +675,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
                         ->orWhere('location_city', '=', $request->location)
@@ -698,7 +698,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
                         ->orWhere('location_city', '=', $request->location)
@@ -714,7 +714,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
                         ->orWhere('location_city', '=', $request->location)
@@ -737,7 +737,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
                         ->orWhere('location_city', '=', $request->location)
@@ -753,7 +753,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
                         ->orWhere('location_city', '=', $request->location)
@@ -776,7 +776,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
                         ->orwhere('hometown_city', '=', $request->hometown)
@@ -792,7 +792,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
                         ->orwhere('hometown_city', '=', $request->hometown)
@@ -815,7 +815,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
                         ->orwhere('hometown_city', '=', $request->hometown)
@@ -831,7 +831,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
                         ->orwhere('hometown_city', '=', $request->hometown)
@@ -854,7 +854,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
                         ->orwhere('hometown_city', '=', $request->hometown)
@@ -870,7 +870,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
                         ->orwhere('hometown_city', '=', $request->hometown)
@@ -893,7 +893,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
@@ -903,7 +903,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
@@ -920,7 +920,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
@@ -930,7 +930,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
@@ -942,12 +942,13 @@ class Combination extends Controller
         elseif ($request->name != null && $request->location == null && $request->hometown == null
             && $request->country == null && $request->gender != null && $request->relationship_status != null
             && $request->age == null) {
+
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
@@ -957,7 +958,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
@@ -1332,7 +1333,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -1357,7 +1358,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -1389,7 +1390,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -1414,7 +1415,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -1446,7 +1447,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -1471,7 +1472,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -1503,7 +1504,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -1521,7 +1522,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -1546,7 +1547,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -1564,7 +1565,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -1590,7 +1591,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -1608,7 +1609,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -1634,7 +1635,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
@@ -1652,7 +1653,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
@@ -1677,7 +1678,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
@@ -1695,7 +1696,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
@@ -1721,7 +1722,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
@@ -1732,7 +1733,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
@@ -1751,7 +1752,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
@@ -1769,7 +1770,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
@@ -2016,7 +2017,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -2042,7 +2043,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -2075,7 +2076,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -2101,7 +2102,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -2135,7 +2136,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -2161,7 +2162,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -2195,7 +2196,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -2214,7 +2215,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -2241,7 +2242,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
@@ -2260,7 +2261,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
@@ -2339,7 +2340,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -2366,7 +2367,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -2416,7 +2417,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                   ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
@@ -2425,7 +2426,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                   ->where('age', 'like', '%/'.$age)
                 ->count();
@@ -2550,7 +2551,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -2567,7 +2568,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -2591,7 +2592,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
@@ -2608,7 +2609,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
@@ -2633,7 +2634,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                   ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
@@ -2643,7 +2644,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                   ->where('age', 'like', '%/'.$age)
                 ->count();
@@ -2661,7 +2662,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                   ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
@@ -2671,7 +2672,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                   ->where('age', 'like', '%/'.$age)
                 ->count();
@@ -2689,7 +2690,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                   ->where('age', 'like', '%/'.$age)
                 ->orderBy('full_name', 'ASC')
@@ -2699,7 +2700,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                   ->where('age', 'like', '%/'.$age)
                 ->count();
@@ -3017,7 +3018,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
                         ->orWhere('location_city', '=', $request->location)
@@ -3040,7 +3041,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
                         ->orWhere('location_city', '=', $request->location)
@@ -3070,7 +3071,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
                         ->orWhere('location_city', '=', $request->location)
@@ -3087,7 +3088,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
                         ->orWhere('location_city', '=', $request->location)
@@ -3111,7 +3112,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
                         ->orWhere('location_city', '=', $request->location)
@@ -3128,7 +3129,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
                         ->orWhere('location_city', '=', $request->location)
@@ -3152,7 +3153,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
                         ->orWhere('location_city', '=', $request->location)
@@ -3169,7 +3170,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
                         ->orWhere('location_city', '=', $request->location)
@@ -3193,7 +3194,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
                         ->orwhere('hometown_city', '=', $request->hometown)
@@ -3210,7 +3211,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
                         ->orwhere('hometown_city', '=', $request->hometown)
@@ -3234,7 +3235,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
                         ->orwhere('hometown_city', '=', $request->hometown)
@@ -3251,7 +3252,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
                         ->orwhere('hometown_city', '=', $request->hometown)
@@ -3275,7 +3276,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
                         ->orwhere('hometown_city', '=', $request->hometown)
@@ -3292,7 +3293,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
                         ->orwhere('hometown_city', '=', $request->hometown)
@@ -3316,7 +3317,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
@@ -3327,7 +3328,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
@@ -3345,7 +3346,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
@@ -3356,7 +3357,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
@@ -3374,7 +3375,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
@@ -3385,7 +3386,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
@@ -3781,7 +3782,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -3807,7 +3808,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -3840,7 +3841,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -3866,7 +3867,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -3899,7 +3900,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -3925,7 +3926,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -3958,7 +3959,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -3977,7 +3978,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -4003,7 +4004,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -4022,7 +4023,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -4049,7 +4050,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -4068,7 +4069,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -4095,7 +4096,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
@@ -4114,7 +4115,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
@@ -4141,7 +4142,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
@@ -4160,7 +4161,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
@@ -4187,7 +4188,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
@@ -4199,7 +4200,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
@@ -4219,7 +4220,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
@@ -4238,7 +4239,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
@@ -4498,7 +4499,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -4525,7 +4526,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -4560,7 +4561,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -4587,7 +4588,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -4622,7 +4623,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -4649,7 +4650,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -4684,7 +4685,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -4704,7 +4705,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -4732,7 +4733,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
@@ -4752,7 +4753,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('hometown', '=', $request->hometown)
@@ -4834,7 +4835,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -4862,7 +4863,7 @@ class Combination extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
+                        ->orWhere('full_name', '=', $request->name);
                 })
                 ->where(function ($query) use ($request) {
                     $query->where('location', '=', $request->location)
@@ -4894,66 +4895,21 @@ class Combination extends Controller
         elseif ($request->name == null && $request->location == null && $request->hometown == null
             && $request->country == null && $request->gender == null && $request->relationship_status == null
             && $request->age == null) {
+            $this->countries = Country::all();
+            $this->allDataIds = DownloadedList::where('userId', Auth::user()->id)->get();
+            $getdownloadedIds = 0;
+            foreach ($this->allDataIds as $dataIds)
+            {
+                $getdownloadedIds = $getdownloadedIds.','.$dataIds->downloadedIds;
+            }
+
             $this->allData = DB::table('phone_lists')
-                ->whereNotIn('id', explode(',', $getdownloadedIds))
-                ->where(function ($query) use ($request) {
-                    $query->where('first_name', '=', $request->name)
-                        ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
-                })
-                ->where(function ($query) use ($request) {
-                    $query->where('location', '=', $request->location)
-                        ->orWhere('location_city', '=', $request->location)
-                        ->orWhere('location_city', '=', ' ' . $request->location)
-                        ->orWhere('location_state', '=', ' ' . $request->location)
-                        ->orWhere('location_state', '=', ' ' . $request->location . "'")
-                        ->orWhere('location_region', '=', ' ' . $request->location);
-                })
-                ->where(function ($query) use ($request) {
-                    $query->where('hometown', '=', $request->hometown)
-                        ->orwhere('hometown_city', '=', $request->hometown)
-                        ->orwhere('hometown_city', '=', ' ' . $request->hometown)
-                        ->orWhere('hometown_state', '=', ' ' . $request->hometown)
-                        ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
-                        ->orWhere('hometown_region', '=', ' ' . $request->hometown);
-                })
-                ->where('country', '=', $request->country)
-                ->where('gender', '=', $request->gender)
-                ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
-                ->orderBy('full_name', 'ASC')
+                ->whereNotIn('id', explode(',',$getdownloadedIds))
+                ->orderBy('first_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
-                ->where(function ($query) use ($request) {
-                    $query->where('first_name', '=', $request->name)
-                        ->orWhere('last_name', '=', $request->name)
-                        ->orWhere('full_name', '=', "$request->name");
-                })
-                ->where(function ($query) use ($request) {
-                    $query->where('location', '=', $request->location)
-                        ->orWhere('location_city', '=', $request->location)
-                        ->orWhere('location_city', '=', ' ' . $request->location)
-                        ->orWhere('location_state', '=', ' ' . $request->location)
-                        ->orWhere('location_state', '=', ' ' . $request->location . "'")
-                        ->orWhere('location_region', '=', ' ' . $request->location);
-                })
-                ->where(function ($query) use ($request) {
-                    $query->where('hometown', '=', $request->hometown)
-                        ->orwhere('hometown_city', '=', $request->hometown)
-                        ->orwhere('hometown_city', '=', ' ' . $request->hometown)
-                        ->orWhere('hometown_state', '=', ' ' . $request->hometown)
-                        ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
-                        ->orWhere('hometown_region', '=', ' ' . $request->hometown);
-                })
-                ->where('country', '=', $request->country)
-                ->where('gender', '=', $request->gender)
-                ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
-                'countries' => $request->country, 'gender' => $request->gender,
-                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount]);
+            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries, 'count'=>$dataCount]);
         }
 
     }

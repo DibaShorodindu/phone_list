@@ -1,7 +1,7 @@
 @extends('front.master')
 
 @section('metaDescription')
-    List of contacts in Phone Number List's database for contacts living in '{{ $dataId }}'
+    List of contacts in Phone Number List's database for contacts living in '{{ $dataId }}' which can be used for telemarketing campaigns
 @endsection
 
 
@@ -44,18 +44,18 @@
                 <div class="col-md-3 col-6">
                     <div class="dropdown" id="searchCountry">
                         <input
-                            class="searchBar w-100 bg-white text-dark fw-normal"
-                            id="countryDropdown"
-                            type="text"
-                            placeholder="Search Person by Country..."
-                            data-toggle="dropdown"
-                            data-bs-toggle="dropdown"
+                                class="searchBar w-100 bg-white text-dark fw-normal"
+                                id="countryDropdown"
+                                type="text"
+                                placeholder="Search Person by Country..."
+                                data-toggle="dropdown"
+                                data-bs-toggle="dropdown"
                         />
                         <span class="caret"></span>
 
                         <ul
-                            class="dropdown-menu w-100 bg-white text-dark fw-bold p-3"
-                            aria-labelledby="countryDropdown"
+                                class="dropdown-menu w-100 bg-white text-dark fw-bold p-3"
+                                aria-labelledby="countryDropdown"
                         >
                             @foreach($country as $countries)
                                 <a class="dropdown-item" href="{{ route('country', ['id' => $countries->countryname]) }}">{{ $countries->countryname }} ({{ $countries->countrycode }}) </a>
@@ -83,10 +83,10 @@
                                 </div>
 
                                 <select
-                                    id="country"
-                                    name="country"
-                                    class="offset-md-2 col-md-4"
-                                    onchange="window.location.href=this.options[this.selectedIndex].value;"
+                                        id="country"
+                                        name="country"
+                                        class="offset-md-2 col-md-4"
+                                        onchange="window.location.href=this.options[this.selectedIndex].value;"
                                 >
                                     @foreach($country as $countries)
                                         <option value="{{ route('country', ['id' => $countries->countryname]) }}" @if ($dataId == $countries->countryname) selected  @endif >{{ $countries->countryname }} ({{ $countries->countrycode }})</option>

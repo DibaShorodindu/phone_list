@@ -5,7 +5,7 @@
 
 
 @section('title')
-    Product | Phone List
+    Terms of service | Phone List
 @endsection
 
 @section('main')
@@ -33,7 +33,7 @@
     <section class="section-legal--content u-padding-lg bg-light">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-8">
+                <div class="col-lg-8 col-md-10 col-12">
                     <div class="card border-0 p-5">
                         <div class="card-body">
                             <p class="card-text">Last Updated: 08/02/2022</p>
@@ -83,7 +83,7 @@
                                     advertisements or promotional or marketing materials.</li>
                                 <li>You will not use the Data for consumer credit purposes, underwriting consumer insurance,
                                     employment purposes, tenant screening purposes, for any other purpose covered by the <a
-                                        href="https://consumer.gov.au/">Australian Consumer Law (ACL)</a> or for any other purpose not
+                                            href="https://consumer.gov.au/">Australian Consumer Law (ACL)</a> or for any other purpose not
                                     expressly authorized by the Agreement.</li>
                             </ol>
                             </p>

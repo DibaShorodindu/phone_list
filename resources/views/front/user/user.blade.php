@@ -17,6 +17,7 @@
             <nav style="--bs-breadcrumb-divider: '>'" aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('/') }}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('category', ['id' => 'A']) }}">People</a></li>
                     <li class="breadcrumb-item active" aria-current="page">{{ $data->first_name.' '.$data->last_name }}</li>
                 </ol>
             </nav>
@@ -44,19 +45,19 @@
                 <div class="col-md-3 col-6">
                     <div class="dropdown" id="searchCountry">
                         <input
-                            class="searchBar w-100 bg-white text-dark fw-normal"
-                            id="countryDropdown"
-                            type="text"
-                            placeholder="Search Person by Country..."
-                            data-toggle="dropdown"
-                            data-bs-toggle="dropdown"
-                            autocomplete="off"
+                                class="searchBar w-100 bg-white text-dark fw-normal"
+                                id="countryDropdown"
+                                type="text"
+                                placeholder="Search Person by Country..."
+                                data-toggle="dropdown"
+                                data-bs-toggle="dropdown"
+                                autocomplete="off"
                         />
                         <span class="caret"></span>
 
                         <ul
-                            class="dropdown-menu w-100 bg-white text-dark fw-bold p-3"
-                            aria-labelledby="countryDropdown"
+                                class="dropdown-menu w-100 bg-white text-dark fw-bold p-3"
+                                aria-labelledby="countryDropdown"
                         >
                             @foreach($country as $countries)
                                 <a class="dropdown-item" href="{{ route('country', ['id' => $countries->countryname]) }}">{{ $countries->countryname }} ({{ $countries->countrycode }}) </a>
@@ -94,297 +95,297 @@
                 <section class="section-contact user-details-div">
                     <div class="card user-details-div__card u-box-shadow-1">
                         <h2 class="card-title">{{ $data->full_name }}'s Contact Details</h2>
-                            <div class="card-body">
-                                @guest
-                                    <div class="contact-details__box row mt-5">
-                                        <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
-                                            <div class="circle-element">
-                                                <i class="bi bi-envelope-fill"></i>
-                                            </div>
-                                        </div>
-
-                                        <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
-                                            <div class="contact-details--text col-lg-5 col-md-5 col-sm-6 mb-2">
-                                                <span>Email (Verified)</span>
-                                                <a href="#"> s**@seoexparte.com </a>
-                                            </div>
-
-                                            <a href="{{ route('/phonelistUserLogin' ) }}" type="button"
-                                               class="contact-details--btn btn btn-grad col-lg-4 col-md-3 col-sm-5 col-8">
-                                                Get Email Address
-                                            </a>
-                                            <div class="col-lg-3"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="contact-details__box row mt-5">
-                                        <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
-                                            <div class="circle-element">
-                                                <i class="bi bi-telephone-fill"></i>
-                                            </div>
-                                        </div>
-
-                                        <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
-                                            <div class="contact-details--text col-lg-5 col-md-5 col-sm-6 mb-2">
-                                                <span>Mobile Number</span>
-                                                <a href="#"> (XXX) XXX-XXXX</a>
-                                            </div>
-
-                                            <a href="{{ route('/phonelistUserLogin' ) }}" type="button"
-                                               class="contact-details--btn btn btn-grad col-lg-4 col-md-3 col-sm-5 col-8">
-                                                Get Mobile Number
-                                            </a>
-                                            <div class="col-lg-3"></div>
-                                        </div>
-                                    </div>
-                                @else
-                                    <div class="contact-details__box row mt-5">
-                                        <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
-                                            <div class="circle-element">
-                                                <i class="bi bi-envelope-fill"></i>
-                                            </div>
-                                        </div>
-
-                                        <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
-                                            <div class="contact-details--text col-lg-5 col-md-5 col-sm-6 mb-2">
-                                                <span>Email (Verified)</span>
-                                                <a href="#"> s**@seoexparte.com </a>
-                                            </div>
-
-                                            <a href="{{ route('peopleSearchById', $data->id ) }}" type="button"
-                                               class="contact-details--btn btn btn-grad col-lg-4 col-md-3 col-sm-5 col-8">
-                                                Get Email Address
-                                            </a>
-                                            <div class="col-lg-3"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="contact-details__box row mt-5">
-                                        <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
-                                            <div class="circle-element">
-                                                <i class="bi bi-telephone-fill"></i>
-                                            </div>
-                                        </div>
-
-                                        <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
-                                            <div class="contact-details--text col-lg-5 col-md-5 col-sm-6 mb-2">
-                                                <span>Mobile Number</span>
-                                                <a href="#"> (XXX) XXX-XXXX</a>
-                                            </div>
-
-                                            <a href="{{ route('peopleSearchById', $data->id ) }}" type="button"
-                                               class="contact-details--btn btn btn-grad col-lg-4 col-md-3 col-sm-5 col-8">
-                                                Get Mobile Number
-                                            </a>
-                                            <div class="col-lg-3"></div>
-                                        </div>
-                                    </div>
-                                @endguest
-
-
+                        <div class="card-body">
+                            @guest
                                 <div class="contact-details__box row mt-5">
                                     <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
                                         <div class="circle-element">
-                                            <i class="bi bi-facebook"></i>
+                                            <i class="bi bi-envelope-fill"></i>
                                         </div>
                                     </div>
 
                                     <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
-                                        <div class="contact-details--text col-lg-5 col-md-7 col-sm-6 mb-2">
-                                            <span>Facebook Profile</span>
-                                            <a href="https://www.facebook.com/{{ $data->uid}}">
-                                                https://www.facebook.com/{{ $data->uid}}
-                                            </a>
+                                        <div class="contact-details--text col-lg-5 col-md-5 col-sm-6 mb-2">
+                                            <span>Email (Verified)</span>
+                                            <a href="#"> s**@seoexparte.com </a>
                                         </div>
 
+                                        <a href="{{ route('/phonelistUserLogin' ) }}" type="button"
+                                           class="contact-details--btn btn btn-grad col-lg-4 col-md-3 col-sm-5 col-8">
+                                            Get Email Address
+                                        </a>
                                         <div class="col-lg-3"></div>
                                     </div>
                                 </div>
 
                                 <div class="contact-details__box row mt-5">
                                     <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
+                                        <div class="circle-element">
+                                            <i class="bi bi-telephone-fill"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
+                                        <div class="contact-details--text col-lg-5 col-md-5 col-sm-6 mb-2">
+                                            <span>Mobile Number</span>
+                                            <a href="#"> (XXX) XXX-XXXX</a>
+                                        </div>
+
+                                        <a href="{{ route('/phonelistUserLogin' ) }}" type="button"
+                                           class="contact-details--btn btn btn-grad col-lg-4 col-md-3 col-sm-5 col-8">
+                                            Get Mobile Number
+                                        </a>
+                                        <div class="col-lg-3"></div>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="contact-details__box row mt-5">
+                                    <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
+                                        <div class="circle-element">
+                                            <i class="bi bi-envelope-fill"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
+                                        <div class="contact-details--text col-lg-5 col-md-5 col-sm-6 mb-2">
+                                            <span>Email (Verified)</span>
+                                            <a href="#"> s**@seoexparte.com </a>
+                                        </div>
+
+                                        <a href="{{ route('peopleSearchById', $data->id ) }}" type="button"
+                                           class="contact-details--btn btn btn-grad col-lg-4 col-md-3 col-sm-5 col-8">
+                                            Get Email Address
+                                        </a>
+                                        <div class="col-lg-3"></div>
+                                    </div>
+                                </div>
+
+                                <div class="contact-details__box row mt-5">
+                                    <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
+                                        <div class="circle-element">
+                                            <i class="bi bi-telephone-fill"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
+                                        <div class="contact-details--text col-lg-5 col-md-5 col-sm-6 mb-2">
+                                            <span>Mobile Number</span>
+                                            <a href="#"> (XXX) XXX-XXXX</a>
+                                        </div>
+
+                                        <a href="{{ route('peopleSearchById', $data->id ) }}" type="button"
+                                           class="contact-details--btn btn btn-grad col-lg-4 col-md-3 col-sm-5 col-8">
+                                            Get Mobile Number
+                                        </a>
+                                        <div class="col-lg-3"></div>
+                                    </div>
+                                </div>
+                            @endguest
+
+
+                            <div class="contact-details__box row mt-5">
+                                <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
+                                    <div class="circle-element">
+                                        <i class="bi bi-facebook"></i>
+                                    </div>
+                                </div>
+
+                                <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
+                                    <div class="contact-details--text col-lg-5 col-md-7 col-sm-6 mb-2">
+                                        <span>Facebook Profile</span>
+                                        <a href="https://www.facebook.com/{{ $data->uid}}">
+                                            https://www.facebook.com/{{ $data->uid}}
+                                        </a>
+                                    </div>
+
+                                    <div class="col-lg-3"></div>
+                                </div>
+                            </div>
+
+                            <div class="contact-details__box row mt-5">
+                                <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
                                     <div class="circle-element">
                                         <i class="bi bi-person-lines-fill"></i>
                                     </div>
-                                    </div>
-                
-                                    <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
-                                        <div class="contact-details--text col-lg-5 col-md-7 col-sm-6 mb-2">
-                                            <span>Age</span>
-                                            <p style="color: #5d6a7e">
-                                                @if(!empty($data->age))
+                                </div>
+
+                                <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
+                                    <div class="contact-details--text col-lg-5 col-md-7 col-sm-6 mb-2">
+                                        <span>Age</span>
+                                        <p style="color: #5d6a7e">
+                                            @if(!empty($data->age))
                                                 {{ $data->age}} years
                                             @else
                                                 N/A
                                             @endif
-                                            </p>
-                                        </div>
-                
+                                        </p>
+                                    </div>
+
                                     <div class="col-lg-3"></div>
-                                    </div>
-                                </div>
-
-                                <div class="contact-details__box row mt-5">
-                                    <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
-                                        <div class="circle-element">
-                                            <i class="bi bi-gender-ambiguous"></i>
-                                        </div>
-                                    </div>
-
-                                    <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
-                                        <div class="contact-details--text col-lg-5 col-md-7 col-sm-6 mb-2">
-                                            <span>Gender</span>
-                                            <p style="color: #5d6a7e">
-                                                @if(!empty($data->gender))
-                                                    <a href="{{ route('people.gender', ['gender'=> $data->gender]) }}">{{ $data->gender}}</a>
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </p>
-                                        </div>
-
-                                        <div class="col-lg-3"></div>
-                                    </div>
-                                </div>
-
-                                <div class="contact-details__box row mt-5">
-                                    <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
-                                        <div class="circle-element">
-                                            <i class="bi bi-heart-fill"></i>
-                                        </div>
-                                    </div>
-
-                                    <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
-                                        <div class="contact-details--text col-lg-5 col-md-7 col-sm-6 mb-2">
-                                            <span>Relationship Status</span>
-                                            <p style="color: #5d6a7e">
-                                                @if(!empty( $data->relationship_status ))
-                                                    {{ $data->relationship_status }}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </p>
-                                        </div>
-
-                                        <div class="col-lg-3"></div>
-                                    </div>
-                                </div>
-
-                                <div class="contact-details__box row mt-5">
-                                    <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
-                                        <div class="circle-element">
-                                            <i class="bi bi-tools"></i>
-                                        </div>
-                                    </div>
-
-                                    <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
-                                        <div class="contact-details--text col-lg-5 col-md-7 col-sm-6 mb-2">
-                                            <span>Work Place</span>
-                                            <p style="color: #5d6a7e">
-                                                @if(!empty( $data->work ))
-                                                    {{ $data->work}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </p>
-                                        </div>
-
-                                        <div class="col-lg-3"></div>
-                                    </div>
-                                </div>
-
-                                <div class="contact-details__box row mt-5">
-                                    <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
-                                        <div class="circle-element">
-                                            <i class="bi bi-mortarboard-fill"></i>
-                                        </div>
-                                    </div>
-
-                                    <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
-                                        <div class="contact-details--text col-lg-5 col-md-7 col-sm-6 mb-2">
-                                            <span>Last Education Year</span>
-                                            <p style="color: #5d6a7e">
-                                                @if(!empty( $data->education_last_year ))
-                                                    {{ $data->education_last_year}}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </p>
-                                        </div>
-
-                                        <div class="col-lg-3"></div>
-                                    </div>
-                                </div>
-
-                                <div class="contact-details__box row mt-5">
-                                    <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
-                                        <div class="circle-element">
-                                            <i class="bi bi-pin-map-fill"></i>
-                                        </div>
-                                    </div>
-
-                                    <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
-                                        <div class="contact-details--text col-lg-5 col-md-7 col-sm-6 mb-2">
-                                            <span>Current Address</span>
-                                            <p style="color: #5d6a7e">
-                                                @if(!empty( $data->location ))
-                                                    {{ $data->location.', '.$data->country }}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </p>
-                                        </div>
-
-                                        <div class="col-lg-3"></div>
-                                    </div>
-                                </div>
-
-                                <div class="contact-details__box row mt-5">
-                                    <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
-                                        <div class="circle-element">
-                                            <i class="bi bi-house-door"></i>
-                                        </div>
-                                    </div>
-
-                                    <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
-                                        <div class="contact-details--text col-lg-5 col-md-7 col-sm-6 mb-2">
-                                            <span>Home Town</span>
-                                            <p style="color: #5d6a7e">
-                                                @if(!empty( $data->hometown ))
-                                                    {{ $data->hometown }}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </p>
-                                        </div>
-
-                                        <div class="col-lg-3 col-md-3"></div>
-                                    </div>
-                                </div>
-
-                                <div class="contact-details__box row mt-5">
-                                    <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
-                                        <div class="circle-element">
-                                            <i class="bi bi-globe2"></i>
-                                        </div>
-                                    </div>
-
-                                    <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
-                                        <div class="contact-details--text col-lg-5 col-md-7 col-sm-6 mb-2">
-                                            <span>Country</span>
-                                            <a href="{{ route('country', ['id' => $data->country]) }}">
-                                                @if(!empty( $data->country ))
-                                                    {{ $data->country }}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </a>
-                                        </div>
-
-                                        <div class="col-lg-3"></div>
-                                    </div>
                                 </div>
                             </div>
+
+                            <div class="contact-details__box row mt-5">
+                                <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
+                                    <div class="circle-element">
+                                        <i class="bi bi-gender-ambiguous"></i>
+                                    </div>
+                                </div>
+
+                                <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
+                                    <div class="contact-details--text col-lg-5 col-md-7 col-sm-6 mb-2">
+                                        <span>Gender</span>
+                                        <a href="#">
+                                            @if(!empty($data->gender))
+                                                {{ $data->gender}}
+                                            @else
+                                                N/A
+                                            @endif
+                                        </a>
+                                    </div>
+
+                                    <div class="col-lg-3"></div>
+                                </div>
+                            </div>
+
+                            <div class="contact-details__box row mt-5">
+                                <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
+                                    <div class="circle-element">
+                                        <i class="bi bi-heart-fill"></i>
+                                    </div>
+                                </div>
+
+                                <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
+                                    <div class="contact-details--text col-lg-5 col-md-7 col-sm-6 mb-2">
+                                        <span>Relationship Status</span>
+                                        <p style="color: #5d6a7e">
+                                            @if(!empty( $data->relationship_status ))
+                                                {{ $data->relationship_status }}
+                                            @else
+                                                N/A
+                                            @endif
+                                        </p>
+                                    </div>
+
+                                    <div class="col-lg-3"></div>
+                                </div>
+                            </div>
+
+                            <div class="contact-details__box row mt-5">
+                                <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
+                                    <div class="circle-element">
+                                        <i class="bi bi-tools"></i>
+                                    </div>
+                                </div>
+
+                                <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
+                                    <div class="contact-details--text col-lg-5 col-md-7 col-sm-6 mb-2">
+                                        <span>Work Place</span>
+                                        <p style="color: #5d6a7e">
+                                            @if(!empty( $data->work ))
+                                                {{ $data->work}}
+                                            @else
+                                                N/A
+                                            @endif
+                                        </p>
+                                    </div>
+
+                                    <div class="col-lg-3"></div>
+                                </div>
+                            </div>
+
+                            <div class="contact-details__box row mt-5">
+                                <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
+                                    <div class="circle-element">
+                                        <i class="bi bi-mortarboard-fill"></i>
+                                    </div>
+                                </div>
+
+                                <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
+                                    <div class="contact-details--text col-lg-5 col-md-7 col-sm-6 mb-2">
+                                        <span>Last Education Year</span>
+                                        <p style="color: #5d6a7e">
+                                            @if(!empty( $data->education_last_year ))
+                                                {{ $data->education_last_year}}
+                                            @else
+                                                N/A
+                                            @endif
+                                        </p>
+                                    </div>
+
+                                    <div class="col-lg-3"></div>
+                                </div>
+                            </div>
+
+                            <div class="contact-details__box row mt-5">
+                                <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
+                                    <div class="circle-element">
+                                        <i class="bi bi-pin-map-fill"></i>
+                                    </div>
+                                </div>
+
+                                <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
+                                    <div class="contact-details--text col-lg-5 col-md-7 col-sm-6 mb-2">
+                                        <span>Current Address</span>
+                                        <p style="color: #5d6a7e">
+                                            @if(!empty( $data->location ))
+                                                {{ $data->location.', '.$data->country }}
+                                            @else
+                                                N/A
+                                            @endif
+                                        </p>
+                                    </div>
+
+                                    <div class="col-lg-3"></div>
+                                </div>
+                            </div>
+
+                            <div class="contact-details__box row mt-5">
+                                <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
+                                    <div class="circle-element">
+                                        <i class="bi bi-house-door"></i>
+                                    </div>
+                                </div>
+
+                                <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
+                                    <div class="contact-details--text col-lg-5 col-md-7 col-sm-6 mb-2">
+                                        <span>Home Town</span>
+                                        <p style="color: #5d6a7e">
+                                            @if(!empty( $data->hometown ))
+                                                {{ $data->hometown }}
+                                            @else
+                                                N/A
+                                            @endif
+                                        </p>
+                                    </div>
+
+                                    <div class="col-lg-3 col-md-3"></div>
+                                </div>
+                            </div>
+
+                            <div class="contact-details__box row mt-5">
+                                <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
+                                    <div class="circle-element">
+                                        <i class="bi bi-globe2"></i>
+                                    </div>
+                                </div>
+
+                                <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
+                                    <div class="contact-details--text col-lg-5 col-md-7 col-sm-6 mb-2">
+                                        <span>Country</span>
+                                        <a href="{{ route('country', ['id' => $data->country]) }}">
+                                            @if(!empty( $data->country ))
+                                                {{ $data->country }}
+                                            @else
+                                                N/A
+                                            @endif
+                                        </a>
+                                    </div>
+
+                                    <div class="col-lg-3"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </section>
                 <!-- END PERSON Contact Details -->
@@ -410,7 +411,11 @@
                                     <div id="collapseOne" class="faq-collapse collapse" aria-labelledby="headingOne"
                                          data-bs-parent="#faq">
                                         <div class="faq-body">
-                                            {{ $data->full_name }} works for {{ $data->work }}.
+                                            {{ $data->full_name }} works for @if(!empty($data->work))
+                                                {{ $data->work}}
+                                            @else
+                                                N/A
+                                            @endif.
                                         </div>
                                     </div>
                                 </div>
@@ -422,14 +427,18 @@
                                                 aria-expanded="true" aria-controls="collapseTwo">
                                             <i class="bi bi-caret-down-square-fill"></i>
 
-                                            <span>What is {{ $data->full_name }}'s email address?
-                        </span>
+                                            <span>What is {{ $data->full_name }}'s birth date?
+                                            </span>
                                         </button>
                                     </h2>
                                     <div id="collapseTwo" class="faq-collapse collapse" aria-labelledby="headingTwo"
                                          data-bs-parent="#faq">
                                         <div class="faq-body">
-                                            {{ $data->full_name }}'s email address is
+                                            {{ $data->full_name }}'s birth date is @if(!empty($data->age))
+                                                {{ $data->age}}
+                                            @else
+                                                N/A
+                                            @endif
                                             .
                                         </div>
                                     </div>
@@ -442,15 +451,19 @@
                                                 aria-expanded="true" aria-controls="collapseThree">
                                             <i class="bi bi-caret-down-square-fill"></i>
                                             <span>
-                          What is {{ $data->full_name }}'s business email address?
-                        </span>
+                                            What is {{ $data->full_name }}'s current address?
+                                            </span>
                                         </button>
                                     </h2>
                                     <div id="collapseThree" class="faq-collapse collapse" aria-labelledby="headingThree"
                                          data-bs-parent="#faq">
                                         <div class="faq-body">
-                                            {{ $data->full_name }}'s business email address is
-                                            .
+                                            {{ $data->full_name }}'s current address is
+                                            @if(!empty( $data->location ))
+                                                {{ $data->location.', '.$data->country }}
+                                            @else
+                                                N/A
+                                            @endif.
                                         </div>
                                     </div>
                                 </div>
@@ -464,7 +477,7 @@
             <div class="col-lg-4">
                 <!-- START PERSON SIMILAR CONTACTS -->
                 <section
-                    class="section-similar-contacts user-details-div ms-lg-4 mt-lg-5 mt-0 mb-lg-0 mb-5"
+                        class="section-similar-contacts user-details-div ms-lg-4 mt-lg-5 mt-0 mb-lg-0 mb-5"
                 >
                     <div class="card user-details-div__card u-box-shadow-1">
                         <h3 class="card-title">Similar Contacts</h3>
@@ -485,14 +498,14 @@
                                     </p>
                                     <div class="similar-contacts-details--contact">
                                         <a
-                                            class="similar-contacts-details--contact-phone"
-                                            href=""window.history.pushstate not working reload
+                                                class="similar-contacts-details--contact-phone"
+                                                href=""window.history.pushstate not working reload
                                         >
                                             <i class="bi bi-telephone-fill"></i>Phone
                                         </a>
                                         <a
-                                            class="similar-contacts-details--contact-email ms-5"
-                                            href=""
+                                                class="similar-contacts-details--contact-email ms-5"
+                                                href=""
                                         >
                                             <i class="bi bi-envelope-fill"></i>Email
                                         </a>

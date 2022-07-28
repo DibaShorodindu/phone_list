@@ -391,6 +391,7 @@ class UserController extends Controller
         }
     }
 
+
     public function peopleSearch(Request $request)
     {
         $this->countries = Country::all();

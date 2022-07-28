@@ -21,6 +21,13 @@ class DownloadedList extends Model
         self::$list->downloadedIds         = implode(',',$request->chk) ;
         self::$list->save();
     }
+    public static function createAllNew($request)
+    {
+        self::$list = new DownloadedList();
+        self::$list->userId         = Auth::user()->id;
+        self::$list->downloadedIds         = implode(',',$request->toArray()) ;
+        self::$list->save();
+    }
     public static function createForOne($request)
     {
         self::$list = new DownloadedList();

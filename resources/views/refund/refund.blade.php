@@ -5,7 +5,7 @@
 
 
 @section('title')
-    Product | Phone List
+    Refund Policy | Phone List
 @endsection
 
 @section('main')
@@ -33,7 +33,7 @@
     <section class="section-legal--content u-padding-lg bg-light">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-8">
+                <div class="col-lg-8 col-md-10 col-12">
                     <div class="card border-0 p-5">
                         <div class="card-body">
                             <p class="card-text">

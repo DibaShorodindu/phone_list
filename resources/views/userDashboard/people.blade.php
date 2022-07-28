@@ -201,7 +201,7 @@
                     @if(isset($name))
                         <input
                                 type="text"
-                                id='searchPeopleFromPhoneList'
+                                id='nameInput'
                                 name="name"
                                 onkeypress="handle()"
                                 placeholder="Enter name..."
@@ -211,7 +211,7 @@
                     @else
                         <input
                                 type="text"
-                                id='searchPeopleFromPhoneList'
+                                id='nameInput'
                                 name="name"
                                 onkeypress="handle()"
                                 placeholder="Enter name..."
@@ -240,7 +240,7 @@
                         <input
                                 type="text"
                                 name="location"
-                                id="location"
+                                id="locationInput"
                                 placeholder="Enter current address..."
                                 onkeypress="handleLocation()"
                                 autocomplete="off"
@@ -250,7 +250,7 @@
                         <input
                                 type="text"
                                 name="location"
-                                id="location"
+                                id="locationInput"
                                 placeholder="Enter current address..."
                                 onkeypress="handleLocation()"
                                 autocomplete="off"
@@ -271,7 +271,7 @@
                         <input
                                 type="text"
                                 name="hometown"
-                                id="hometown"
+                                id="hometownInput"
                                 placeholder="Enter hometown..."
                                 onkeypress="handleHometown()"
                                 autocomplete="off"
@@ -281,7 +281,7 @@
                         <input
                                 type="text"
                                 name="hometown"
-                                id="hometown"
+                                id="hometownInput"
                                 placeholder="Enter hometown..."
                                 onkeypress="handleHometown()"
                                 autocomplete="off"
@@ -348,7 +348,7 @@
                     @if (isset($age))
                         <input
                                 type="text"
-                                id='searchPeopleFromPhoneList'
+                                id='ageInput'
                                 name="age"
                                 onkeypress="handle()"
                                 placeholder="Enter birthyear..."
@@ -358,7 +358,7 @@
                     @else
                         <input
                                 type="text"
-                                id='searchPeopleFromPhoneList'
+                                id='ageInput'
                                 name="age"
                                 onkeypress="handle()"
                                 placeholder="Enter birthyear..."
@@ -525,10 +525,88 @@
                                     >
                                         <thead>
                                         <tr>
+                                            {{--<th class="px-4">
+                                                <input id="checkAll" type="button" class="selectAll" value="Select All"/>
+                                            </th>--}}
+                                            {{--<th class="px-4">
+                                                <!-- <a href="#" class="selectAll"> Select All </a> -->
+                                                <div class="dropdown open">
+                                                    <button
+                                                            class="btn btn-purple dropdown-toggle rounded"
+                                                            type="button"
+                                                            id="triggerId"
+                                                            data-bs-toggle="dropdown"
+                                                            aria-haspopup="true"
+                                                            aria-expanded="false"
+                                                    >
+                                                        Select Data
+                                                    </button>
+                                                    <div
+                                                            class="dropdown-menu"
+                                                            aria-labelledby="triggerId"
+                                                    >
+                                                        <input id="checkAll"
+                                                               type="button"
+                                                               value="Select this page"
+                                                               class="dropdown-item select selectAll"
+                                                        />
+                                                        <input id="checkAllSearch"
+                                                               type="button"
+                                                               value="Select all people"
+                                                               class="dropdown-item select selectAll"
+                                                        />
+                                                        --}}{{--<button class="dropdown-item select" href="#">
+                                                            Select all people
+                                                        </button>--}}{{--
+
+                                                        <span class="dropdown-item select"
+                                                        >Select from
+                                                      <input class="select-input" type="text" />
+                                                      to
+                                                      <input class="select-input" type="text" />
+                                                    </span>
+                                                    </div>
+                                                </div>
+                                            </th>--}}
+                                            @if(isset($name))<input type="text"  name="name" value="{{ $name }}" hidden />@endif
+                                            @if(isset($location)) <input type="text" name="location" value="{{ $location }}" hidden />@endif
+                                            @if(isset($hometown)) <input type="text" name="hometown" value="{{ $hometown }}" hidden />@endif
+                                            @if (isset($countries)) <input type="text"name="country" value="{{ $countries }}" hidden />@endif
+                                            @if (isset($age)) <input type="text" id='ageInput' name="age" value="{{ $age }}" hidden />@endif
+                                            @if (isset($gender))<input type="text" name="gender" value="{{ $gender }}" hidden />@endif
+                                            @if (isset($relationship_status)) <input type="text" name="relationship_status" value="{{ $relationship_status }}" hidden />@endif
                                             <th class="px-4">
                                                 <input id="checkAll" type="button" class="selectAll" value="Select All"/>
+                                                <!--<input type="button" class="selectAll" value="Download All Filtered Data" />-->
+                                                <div class="dropdown open">
+                                                    <button
+                                                            class="btn btn-purple dropdown-toggle rounded"
+                                                            type="button"
+                                                            id="triggerId"
+                                                            data-bs-toggle="dropdown"
+                                                            aria-haspopup="true"
+                                                            aria-expanded="false"
+                                                    >
+                                                        Download Filtered Data
+                                                    </button>
+                                                    <div
+                                                            class="dropdown-menu"
+                                                            aria-labelledby="triggerId"
+                                                    >
+                                                        <button type="submit" class="dropdown-item select">
+                                                            Download All Filtered Data
+                                                        </button>
+                                                        <hr>
+                                                        <span class="dropdown-item select">Download
+                                                      <input name="limit" class="select-input" type="number" />
+                                                      Datas
+                                                    </span>
+                                                        <button class="btn btn-purple mx-auto" type="submit">
+                                                            Apply Download
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </th>
-
                                             <th>Name</th>
                                             <th>Age</th>
                                             <th>Work Place</th>
@@ -542,7 +620,7 @@
                                         </tr>
                                         </thead>
 
-                                        <tbody>
+                                        <tbody id="tbody">
                                         @foreach($allData as $data)
                                             <tr class="table-row">
                                                 <td>
@@ -1274,6 +1352,8 @@
         crossorigin="anonymous"
         referrerpolicy="no-referrer"
 ></script>
+
+{{--select data from this page--}}
 <script type="text/javascript">
     $(function() {
 
@@ -1306,6 +1386,41 @@
                 $(this).val('Select All');
 
             }
+        });
+
+    });
+</script>
+
+{{--select all data from search--}}
+<script type="text/javascript">
+    $(function() {
+        let inputName,  inputLocation, inputHometown, inputCountry, inputAge, inputGender, inputRelationshipStatus;
+        let input = [];
+        $(document).on('click', '#checkAllSearch', function() {
+
+            inputName = document.getElementById('nameInput').value;
+            inputLocation = document.getElementById('locationInput').value;
+            inputHometown = document.getElementById('hometownInput').value;
+            inputCountry = document.getElementById('countryInput').value;
+            inputAge = document.getElementById('ageInput').value;
+            inputGender = document.getElementById('genderInput').value;
+            inputRelationshipStatus = document.getElementById('relationshipStatusInput').value;
+
+            input = [ inputName,  inputLocation, inputHometown, inputCountry, inputAge, inputGender, inputRelationshipStatus ];
+
+            $.ajax({
+                url:"{{ route('all.search.data') }}",
+                method:"POST",
+                data:{input:input, _token:"{{ csrf_token() }}"},
+                dataType:"json",
+                success:function(allData)
+                {
+                    console.log(allData);
+                },
+                error: function () {
+                    console.log(error);
+                }
+            })
         });
 
     });

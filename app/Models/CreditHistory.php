@@ -33,6 +33,19 @@ class CreditHistory extends Model
         self::$creditHistory->date  = Carbon::now();
         self::$creditHistory->save();
     }
+    public static function createAll($request)
+    {
+        self::$creditHistory = new CreditHistory();
+        self::$credit =Credit::where('userId', Auth::user()->id)->first();
+        $usableCredit = self::$credit->useableCredit;
+        self::$creditHistory->userId         = Auth::user()->id;
+        self::$creditHistory->usedCredit  = $request;
+        self::$creditHistory->useAbleCredit  = $usableCredit;
+        self::$creditHistory->prevCredit  = $usableCredit+$request;
+        self::$creditHistory->dataPurchase  = $request;
+        self::$creditHistory->date  = Carbon::now();
+        self::$creditHistory->save();
+    }
     public static function createForOne($request)
     {
         self::$creditHistory = new CreditHistory();

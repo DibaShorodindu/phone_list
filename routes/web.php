@@ -152,7 +152,7 @@ Route::get('/file-export', [
 ]);
 
 Route::get('/customExport', [
-    'uses' => '\App\Http\Controllers\AdminController@customExport',
+    'uses' => '\App\Http\Controllers\User\Searching\DataSearch@customExport',
     'as' => 'customExport'
 ]);
 
@@ -259,6 +259,8 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function (){
     ]);
 
     Route::post('/people/fetch_data', '\App\Http\Controllers\User\UserController@peopleDataHistory')->name('peopleDataHistory');
+
+    Route::post('/people/search/all-data', '\App\Http\Controllers\User\Searching\DataSearch@allSearchData')->name('all.search.data');
 
     //searching
 

@@ -42,6 +42,22 @@ class ExportHistori extends Model
             return '';
         }
     }
+    public static function saveFileAll($request)
+    {
+        $filepath = 'user/release/'.\Auth::user()->id.'.'.time().'.'.'phoneList.xlsx' ;
+
+        self::$file = Excel::store(new CustomExport($request->toArray()), $filepath, 'local');
+        if(self::$file)
+        {
+            self::$fileName = \Auth::user()->id.'.'.time().'.'.'phoneList.xlsx';
+            self::$fileDirectory = 'user/release/';
+            self::$fileUrl = self::$fileDirectory.self::$fileName;
+            return self::$fileUrl;
+        }
+        else{
+            return '';
+        }
+    }
     public static function saveFileForOne($request)
     {
         $filepath = 'user/release/'.Auth::user()->id.'.'.time().'.'.'phoneList.xlsx' ;
@@ -66,6 +82,17 @@ class ExportHistori extends Model
         self::$history->createdOn         = Carbon::now();
         self::$history->file              = self::saveFile($request);
         self::$history->record            = count($request->chk);
+        self::$history->save();
+    }
+    public static function allDataExportHistori($request, $data)
+    {
+
+
+        self::$history = new ExportHistori();
+        self::$history->userId            = Auth::user()->id;
+        self::$history->createdOn         = Carbon::now();
+        self::$history->file              = self::saveFileAll($data);
+        self::$history->record            = $request;
         self::$history->save();
     }
 

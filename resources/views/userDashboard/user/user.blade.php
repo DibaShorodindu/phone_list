@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <meta name="description" content="{{ $data->first_name.' '.$data->last_name }}'s Contact Details with mobile number and address from Phone List" />
+    <meta name="description" content="{{ $data->first_name.' '.$data->last_name }}'s Contact Details with mobile number, email, birth date, gender, work place, address from Phone List " />
     <meta name="keywords"
           content="phone number list, mobile number list, sales leads, mobile leads, data prospect, sales crm, contact database, contact details" />
 
@@ -354,24 +354,24 @@
 
                             <div class="contact-details__box row mt-5">
                                 <div class="contact-details--icon col-lg-1 col-md-1 col-sm-2 col-2">
-                                <div class="circle-element">
-                                    <i class="bi bi-person-lines-fill"></i>
+                                    <div class="circle-element">
+                                        <i class="bi bi-person-lines-fill"></i>
+                                    </div>
                                 </div>
-                                </div>
-            
+
                                 <div class="contact-details--content row col-md-10 col-sm-6 col-9 ps-md-5 ps-4">
                                     <div class="contact-details--text col-lg-5 col-md-7 col-sm-6 mb-2">
-                                        <span>Age</span>
+                                        <span>Date Of Birth</span>
                                         <p style="color: #5d6a7e">
                                             @if(!empty($data->age))
-                                            {{ $data->age}} years
-                                        @else
-                                            N/A
-                                        @endif
+                                                {{ $data->age}}
+                                            @else
+                                                N/A
+                                            @endif
                                         </p>
                                     </div>
-            
-                                <div class="col-lg-3"></div>
+
+                                    <div class="col-lg-3"></div>
                                 </div>
                             </div>
 
@@ -387,7 +387,7 @@
                                         <span>Gender</span>
                                         <p style="color: #5d6a7e">
                                             @if(!empty($data->gender))
-                                                <a href="{{ route('people.gender', ['gender'=> $data->gender]) }}">{{ $data->gender}}</a>
+                                                {{ $data->gender}}
                                             @else
                                                 N/A
                                             @endif
@@ -561,7 +561,11 @@
                                     <div id="collapseOne" class="faq-collapse collapse" aria-labelledby="headingOne"
                                          data-bs-parent="#faq">
                                         <div class="faq-body">
-                                            {{ $data->full_name }} works for {{ $data->work }}.
+                                            {{ $data->full_name }} works for @if(!empty($data->work))
+                                                {{ $data->work}}
+                                            @else
+                                                N/A
+                                            @endif.
                                         </div>
                                     </div>
                                 </div>
@@ -573,14 +577,18 @@
                                                 aria-expanded="true" aria-controls="collapseTwo">
                                             <i class="bi bi-caret-down-square-fill"></i>
 
-                                            <span>What is {{ $data->full_name }}'s email address?
-                        </span>
+                                            <span>What is {{ $data->full_name }}'s birth date?
+                                            </span>
                                         </button>
                                     </h2>
                                     <div id="collapseTwo" class="faq-collapse collapse" aria-labelledby="headingTwo"
                                          data-bs-parent="#faq">
                                         <div class="faq-body">
-                                            {{ $data->full_name }}'s email address is
+                                            {{ $data->full_name }}'s birth date is @if(!empty($data->age))
+                                                {{ $data->age}}
+                                            @else
+                                                N/A
+                                            @endif
                                             .
                                         </div>
                                     </div>
@@ -593,15 +601,19 @@
                                                 aria-expanded="true" aria-controls="collapseThree">
                                             <i class="bi bi-caret-down-square-fill"></i>
                                             <span>
-                          What is {{ $data->full_name }}'s business email address?
-                        </span>
+                                            What is {{ $data->full_name }}'s current address?
+                                            </span>
                                         </button>
                                     </h2>
                                     <div id="collapseThree" class="faq-collapse collapse" aria-labelledby="headingThree"
                                          data-bs-parent="#faq">
                                         <div class="faq-body">
-                                            {{ $data->full_name }}'s business email address is
-                                            .
+                                            {{ $data->full_name }}'s current address is
+                                            @if(!empty( $data->location ))
+                                                {{ $data->location.', '.$data->country }}
+                                            @else
+                                                N/A
+                                            @endif.
                                         </div>
                                     </div>
                                 </div>
@@ -624,7 +636,8 @@
                             @foreach($userData->take(6) as $userFetchData)
                                 <div class="similar-contacts-details__box pt-4">
                                     <a class="similar-contacts-details--name" href="{{ route('user', ['id' => $userFetchData->id]) }}"
-                                    >{{ $userFetchData->full_name}}</a>
+                                    >{{ $userFetchData->full_name}}</a
+                                    >
                                     <p class="similar-contacts-details--job">
                                         @if(!empty( $userFetchData->work ))
                                             {{ $userFetchData->work }}
