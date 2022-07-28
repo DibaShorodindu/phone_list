@@ -36,6 +36,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Http;
 
 class AdminController extends Controller
 {
@@ -80,14 +81,14 @@ class AdminController extends Controller
             $batch  = Bus::batch([])->dispatch();
 
             //create table setup...
-            $table_name = 'phone_lists'.time();
-            $this->CreateTableSetup($table_name);
-            $phoneListSetupData = [
-                'file_name' => request()->file->getClientOriginalName(),
-                'table_name' => $table_name,
-                'date' => date('Y-m-d'),
-            ];
-            PhoneListSetup::create($phoneListSetupData);
+            // $table_name = 'phone_lists'.time();
+            // $this->CreateTableSetup($table_name);
+            // $phoneListSetupData = [
+            //     'file_name' => request()->file->getClientOriginalName(),
+            //     'table_name' => $table_name,
+            //     'date' => date('Y-m-d'),
+            // ];
+            // PhoneListSetup::create($phoneListSetupData);
 
             foreach ($chunks as $key => $chunk) {
                 $data = array_map('str_getcsv', $chunk);
@@ -98,7 +99,7 @@ class AdminController extends Controller
                 }
 
                 if (isset($data)) {
-                    $batch->add(new PhoneCsvProcess(mb_convert_encoding($data, 'UTF-8', 'UTF-8'), $header, $phoneArray, $table_name));
+                    $batch->add(new PhoneCsvProcess(mb_convert_encoding($data, 'UTF-8', 'UTF-8'), $header, $phoneArray));
                 }
             }
             return back()->with('message', 'Successfully imported file!');
@@ -205,23 +206,31 @@ class AdminController extends Controller
     }
 
 
-    public function manageData(){
-        // $this->allData = PhoneList::paginate(10);
+    // public function manageData(){
+    //     // $this->allData = PhoneList::paginate(10);
 
-        $allData = [];
-        $rowCount = 0;
-        $tables = PhoneListSetup::pluck('table_name')->all();
+    //     $allData = [];
+    //     $rowCount = 0;
+    //     $tables = PhoneListSetup::pluck('table_name')->all();
     
-        foreach ($tables as $key => $value) {
-            $data = DB::table($value)->get();
-            $rowCount += count($data);
-            array_push($allData, $data);
-        }
-        $allData = $this->paginate($allData[0]);
-        $allData->withPath('view-all');
-        // $rowCount = PhoneList::count();
-        return view('admin.manage-data', ['allData' => $allData, 'rowcount' => $rowCount]);
+    //     foreach ($tables as $key => $value) {
+    //         $data = DB::table($value)->get();
+    //         $rowCount += count($data);
+    //         array_push($allData, $data);
+    //     }
+    //     $allData = $this->paginate($allData[0]);
+    //     $allData->withPath('view-all');
+    //     // $rowCount = PhoneList::count();
+    //     return view('admin.manage-data', ['allData' => $allData, 'rowcount' => $rowCount]);
+    // }
+
+    public function manageData(){
+        //dd('hello');
+        $this->allData = PhoneList::paginate(10);
+        $rowCount = PhoneList::count();
+        return view('admin.manage-data', ['allData' => $this->allData, 'rowcount' => $rowCount]);
     }
+    
     public function editPhoneListData(Request $request){
         PhoneList::updatePhoneList($request);
         $this->allData = PhoneList::paginate(10);
@@ -246,7 +255,7 @@ class AdminController extends Controller
     }
 
     public function manageUser(){
-        //dd('hello');
+
         $this->allData = PhoneListUserModel::paginate(10);
         return view('admin.manage-user', ['allData' => $this->allData]);
     }
