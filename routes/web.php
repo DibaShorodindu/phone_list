@@ -252,6 +252,10 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function (){
         'uses' => '\App\Http\Controllers\User\UserController@people',
         'as'   => 'people',
     ]);
+    Route::get('search/people',[
+        'uses' => '\App\Http\Controllers\User\UserController@people_search',
+        'as'   => 'search.people',
+    ]);
 
     Route::get('/user/{id}',[
         'uses' => '\App\Http\Controllers\User\UserController@user',
