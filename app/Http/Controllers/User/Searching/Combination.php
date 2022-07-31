@@ -18,21 +18,74 @@ class Combination extends Controller
     protected $allData;
     protected $allDataIds;
     protected $countries;
+    protected $getdownloadedId;
+
+
+    public function filter_data($request)
+    {
+        $query = DB::table('phone_lists')
+            // $query = QueryBuilder::for(PhoneList::class)
+            ->whereNotIn('id', explode(',', $this->getdownloadedId));
+
+        if ($request->name != null) {
+            $query =  $query->where(function ($query) use ($request) {
+                $query->where('first_name', '=', $request->name)
+                    ->orWhere('last_name', '=', $request->name)
+                    ->orWhere('full_name', '=', $request->name);
+            });
+        }
+        if ($request->location != null) {
+            $query =  $query->where(function ($query) use ($request) {
+                $query->where('location', '=', $request->location)
+                    ->orWhere('location_city', '=', $request->location)
+                    ->orWhere('location_city', '=', ' ' . $request->location)
+                    ->orWhere('location_state', '=', ' ' . $request->location)
+                    ->orWhere('location_state', '=', ' ' . $request->location . "'")
+                    ->orWhere('location_region', '=', ' ' . $request->location);
+            });
+        }
+        if ($request->hometown != null) {
+            $query =  $query->where(function ($query) use ($request) {
+                $query->where('hometown', '=', $request->hometown)
+                    ->orwhere('hometown_city', '=', $request->hometown)
+                    ->orwhere('hometown_city', '=', ' ' . $request->hometown)
+                    ->orWhere('hometown_state', '=', ' ' . $request->hometown)
+                    ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
+                    ->orWhere('hometown_region', '=', ' ' . $request->hometown);
+            });
+        }
+        if ($request->country != null) {
+            $query =  $query->where('country', '=', $request->country);
+        }
+        if ($request->gender != null) {
+            $query =  $query->where('gender', '=', $request->gender);
+        }
+        if ($request->relationship_status != null) {
+            $query =  $query->where('relationship_status', '=', $request->relationship_status);
+        }
+        if ($request->age != null) {
+            $query =  $query->where('age', 'like', '%/' . $request->age);
+        }
+
+        $results = $query->orderBy('full_name', 'ASC');
+        return $results;
+    }
+
+
     public function peopleSearchCombination(Request $request)
     {
-        $credit=Credit::where('userId',Auth::user()->id)->first();
-        if($credit->useableCredit == 0 )
+        $credit = Credit::where('userId', Auth::user()->id)->first();
+        if ($credit->useableCredit == 0)
             return view('userDashboard.settings.upgrade');
-        if($credit->useableCredit >= 1 && $request->name != null && $request->page == null)
+        if ($credit->useableCredit >= 1 && $request->name != null && $request->page == null)
             Credit::filterCredit();
-        if($credit->useableCredit >= 1 && $request->location != null && $request->page == null)
+        if ($credit->useableCredit >= 1 && $request->location != null && $request->page == null)
             Credit::filterCredit();
-        if($credit->useableCredit >= 1 && $request->hometown != null && $request->page == null)
+        if ($credit->useableCredit >= 1 && $request->hometown != null && $request->page == null)
             Credit::filterCredit();
-        if($credit->useableCredit >= 1 && $request->country != null && $request->page == null)
+        if ($credit->useableCredit >= 1 && $request->country != null && $request->page == null)
             Credit::filterCredit();
-        if($credit->useableCredit >= 1 && $request->age != null && $request->page == null)
-        {
+        if ($credit->useableCredit >= 1 && $request->age != null && $request->page == null) {
             Credit::filterCredit();
             $validated = $request->validate([
                 'age' => 'required|digits:4',
@@ -47,26 +100,43 @@ class Combination extends Controller
             else{
                 $low = 1; $high = $range[1];
             }*/
-
         }
-        if($credit->useableCredit >= 1 && $request->gender != null && $request->page == null)
+        if ($credit->useableCredit >= 1 && $request->gender != null && $request->page == null)
             Credit::filterCredit();
-        if($credit->useableCredit >= 1 && $request->relationship_status != null && $request->page == null)
+        if ($credit->useableCredit >= 1 && $request->relationship_status != null && $request->page == null)
             Credit::filterCredit();
 
 
 
         $this->countries = Country::all();
         $this->allDataIds = DownloadedList::where('userId', Auth::user()->id)->get();
+
         $getdownloadedIds = 0;
         foreach ($this->allDataIds as $dataIds) {
             $getdownloadedIds = $getdownloadedIds . ',' . $dataIds->downloadedIds;
         }
+        $this->getdownloadedId = $getdownloadedIds;
         $result = $request->name;
 
-        if ($request->name != null && $request->location == null && $request->hometown == null
+        $response_data = $this->filter_data($request);
+        $this->allData = $response_data->paginate(15);
+        $dataCount = $response_data->count();
+
+
+        return view('userDashboard.people', [
+            'allData' => $this->allData, 'country' => $this->countries,
+            'location' => $request->location, 'hometown' => $request->hometown,
+            'name' => $request->name, 'gender' => $request->gender,
+            'relationship_status' => $request->relationship_status,
+            'age' => $request->age, 'count' => $dataCount
+        ]);
+
+
+        if (
+            $request->name != null && $request->location == null && $request->hometown == null
             && $request->country == null && $request->countryInputName == null && $request->gender == null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('first_name', '=', $request->name)
@@ -81,12 +151,15 @@ class Combination extends Controller
                 ->orWhere('last_name', '=', $request->name)
                 ->orWhere('full_name', '=', $request->name)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'name' => $request->name, 'count' => $dataCount]);
-        }
-        elseif ($request->location != null && $request->name == null && $request->hometown == null &&
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'name' => $request->name, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->location != null && $request->name == null && $request->hometown == null &&
             $request->country == null && $request->countryInputName == null && $request->gender == null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('location', '=', $request->location)
@@ -105,12 +178,15 @@ class Combination extends Controller
                 ->orWhere('location_state', '=', ' ' . $request->location . "'")
                 ->orWhere('location_region', '=', ' ' . $request->location)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'location' => $request->location, 'count' => $dataCount]);
-        }
-        elseif ($request->hometown != null && $request->name == null && $request->location == null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'location' => $request->location, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->hometown != null && $request->name == null && $request->location == null
             && $request->country == null && $request->countryInputName == null && $request->gender == null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('hometown', '=', $request->hometown)
@@ -130,12 +206,15 @@ class Combination extends Controller
                 ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                 ->orWhere('hometown_region', '=', ' ' . $request->hometown)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'hometown' => $request->hometown, 'count' => $dataCount]);
-        }
-        elseif ($request->hometown == null && $request->name == null && $request->location == null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'hometown' => $request->hometown, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->hometown == null && $request->name == null && $request->location == null
             && $request->country != null && $request->gender == null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('country', '=', $request->country)
@@ -144,12 +223,15 @@ class Combination extends Controller
             $dataCount = DB::table('phone_lists')
                 ->where('country', '=', $request->country)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'countries' => $request->country, 'count' => $dataCount]);
-        }
-        elseif ($request->hometown == null && $request->name == null && $request->location == null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'countries' => $request->country, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->hometown == null && $request->name == null && $request->location == null
             && $request->country == null && $request->gender != null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
 
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
@@ -159,12 +241,15 @@ class Combination extends Controller
             $dataCount = DB::table('phone_lists')
                 ->where('gender', '=', $request->gender)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'gender' => $request->gender, 'count' => $dataCount]);
-        }
-        elseif ($request->hometown == null && $request->name == null && $request->location == null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'gender' => $request->gender, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->hometown == null && $request->name == null && $request->location == null
             && $request->country == null && $request->gender == null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('relationship_status', '=', $request->relationship_status)
@@ -173,12 +258,15 @@ class Combination extends Controller
             $dataCount = DB::table('phone_lists')
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'relationship_status' => $request->relationship_status, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown == null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'relationship_status' => $request->relationship_status, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown == null
             && $request->country == null && $request->gender == null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -211,12 +299,15 @@ class Combination extends Controller
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'name' => $request->name, 'location' => $request->location, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown != null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'name' => $request->name, 'location' => $request->location, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown != null
             && $request->country == null && $request->gender == null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -249,12 +340,15 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'name' => $request->name, 'hometown' => $request->hometown, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown == null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'name' => $request->name, 'hometown' => $request->hometown, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown == null
             && $request->country != null && $request->gender == null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('country', '=', $request->country)
@@ -274,12 +368,15 @@ class Combination extends Controller
                 })
                 ->count();
 
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'name' => $request->name, 'countries' => $request->country, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown == null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'name' => $request->name, 'countries' => $request->country, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown == null
             && $request->country == null && $request->gender != null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('gender', '=', $request->gender)
@@ -299,12 +396,15 @@ class Combination extends Controller
                 })
                 ->count();
 
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'name' => $request->name, 'gender' => $request->gender, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown == null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'name' => $request->name, 'gender' => $request->gender, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown == null
             && $request->country == null && $request->gender == null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('relationship_status', '=', $request->relationship_status)
@@ -321,12 +421,15 @@ class Combination extends Controller
                 ->orHaving('last_name', '=', $request->name)
                 ->orHaving('full_name', '=', $request->name)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'name' => $request->name, 'relationship_status' => $request->relationship_status, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown != null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'name' => $request->name, 'relationship_status' => $request->relationship_status, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown != null
             && $request->country == null && $request->gender == null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -365,12 +468,15 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'location' => $request->location, 'hometown' => $request->hometown, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown == null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'location' => $request->location, 'hometown' => $request->hometown, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown == null
             && $request->country != null && $request->gender == null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('country', '=', $request->country)
@@ -395,12 +501,15 @@ class Combination extends Controller
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'location' => $request->location, 'countries' => $request->country, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown == null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'location' => $request->location, 'countries' => $request->country, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown == null
             && $request->country == null && $request->gender != null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('gender', '=', $request->gender)
@@ -425,12 +534,15 @@ class Combination extends Controller
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'location' => $request->location, 'gender' => $request->gender, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown == null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'location' => $request->location, 'gender' => $request->gender, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown == null
             && $request->country == null && $request->gender == null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('relationship_status', '=', $request->relationship_status)
@@ -455,13 +567,16 @@ class Combination extends Controller
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'relationship_status' => $request->relationship_status,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown != null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown != null
             && $request->country != null && $request->gender == null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('country', '=', $request->country)
@@ -486,12 +601,15 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'hometown' => $request->hometown, 'countries' => $request->country, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown != null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'hometown' => $request->hometown, 'countries' => $request->country, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown != null
             && $request->country == null && $request->gender != null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('gender', '=', $request->gender)
@@ -516,12 +634,15 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'hometown' => $request->hometown, 'gender' => $request->gender, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown != null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'hometown' => $request->hometown, 'gender' => $request->gender, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown != null
             && $request->country == null && $request->gender == null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('relationship_status', '=', $request->relationship_status)
@@ -546,13 +667,16 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'hometown' => $request->hometown, 'relationship_status' => $request->relationship_status,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown == null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown == null
             && $request->country != null && $request->gender != null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('country', '=', $request->country)
@@ -563,12 +687,15 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'countries' => $request->country, 'gender' => $request->gender, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown == null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'countries' => $request->country, 'gender' => $request->gender, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown == null
             && $request->country != null && $request->gender == null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('country', '=', $request->country)
@@ -579,13 +706,16 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'countries' => $request->country, 'relationship_status' => $request->relationship_status,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown == null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown == null
             && $request->country == null && $request->gender != null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('gender', '=', $request->gender)
@@ -596,13 +726,16 @@ class Combination extends Controller
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'gender' => $request->gender, 'relationship_status' => $request->relationship_status,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown != null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown != null
             && $request->country == null && $request->gender == null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -647,13 +780,16 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown == null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown == null
             && $request->country != null && $request->gender == null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -686,13 +822,16 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'countries' => $request->country,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown == null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown == null
             && $request->country == null && $request->gender != null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -725,13 +864,16 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'gender' => $request->gender,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown == null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown == null
             && $request->country == null && $request->gender == null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -764,13 +906,16 @@ class Combination extends Controller
                 })
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location,
-                'relationship_status' => $request->relationship_status, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown != null
+                'relationship_status' => $request->relationship_status, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown != null
             && $request->country != null && $request->gender == null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -803,13 +948,16 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown, 'countries' => $request->country,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown != null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown != null
             && $request->country == null && $request->gender != null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -842,13 +990,16 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown, 'gender' => $request->gender,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown != null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown != null
             && $request->country == null && $request->gender == null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -881,13 +1032,16 @@ class Combination extends Controller
                 })
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown,
-                'relationship_status' => $request->relationship_status, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown == null
+                'relationship_status' => $request->relationship_status, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown == null
             && $request->country != null && $request->gender != null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -908,13 +1062,16 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'countries' => $request->country, 'gender' => $request->gender,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown == null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown == null
             && $request->country != null && $request->gender == null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -935,13 +1092,16 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'countries' => $request->country,
-                'relationship_status' => $request->relationship_status, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown == null
+                'relationship_status' => $request->relationship_status, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown == null
             && $request->country == null && $request->gender != null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
 
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
@@ -963,13 +1123,16 @@ class Combination extends Controller
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'gender' => $request->gender,
-                'relationship_status' => $request->relationship_status, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown != null
+                'relationship_status' => $request->relationship_status, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown != null
             && $request->country != null && $request->gender == null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1010,13 +1173,16 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown,
-                'countries' => $request->country, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown != null
+                'countries' => $request->country, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown != null
             && $request->country == null && $request->gender != null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1057,13 +1223,16 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown,
-                'gender' => $request->gender, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown != null
+                'gender' => $request->gender, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown != null
             && $request->country == null && $request->gender == null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1104,13 +1273,16 @@ class Combination extends Controller
                 })
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown,
-                'relationship_status' => $request->relationship_status, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown == null
+                'relationship_status' => $request->relationship_status, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown == null
             && $request->country != null && $request->gender != null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1137,13 +1309,16 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'countries' => $request->country,
-                'gender' => $request->gender, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown == null
+                'gender' => $request->gender, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown == null
             && $request->country != null && $request->gender == null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1170,13 +1345,16 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'countries' => $request->country,
-                'relationship_status' => $request->relationship_status, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown == null
+                'relationship_status' => $request->relationship_status, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown == null
             && $request->country == null && $request->gender != null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1203,13 +1381,16 @@ class Combination extends Controller
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'gender' => $request->gender,
-                'relationship_status' => $request->relationship_status, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown != null
+                'relationship_status' => $request->relationship_status, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown != null
             && $request->country != null && $request->gender != null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1236,13 +1417,16 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'hometown' => $request->hometown, 'countries' => $request->country,
-                'gender' => $request->gender, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown != null
+                'gender' => $request->gender, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown != null
             && $request->country != null && $request->gender == null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1269,13 +1453,16 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'hometown' => $request->hometown, 'countries' => $request->country,
-                'relationship_status' => $request->relationship_status, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown != null
+                'relationship_status' => $request->relationship_status, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown != null
             && $request->country == null && $request->gender != null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1302,13 +1489,16 @@ class Combination extends Controller
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'hometown' => $request->hometown, 'gender' => $request->gender,
-                'relationship_status' => $request->relationship_status, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown == null
+                'relationship_status' => $request->relationship_status, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown == null
             && $request->country != null && $request->gender != null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('country', '=', $request->country)
@@ -1321,13 +1511,16 @@ class Combination extends Controller
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'countries' => $request->country, 'gender' => $request->gender,
-                'relationship_status' => $request->relationship_status, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown != null
+                'relationship_status' => $request->relationship_status, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown != null
             && $request->country != null && $request->gender == null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1378,13 +1571,16 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
-                'countries' => $request->country, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown != null
+                'countries' => $request->country, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown != null
             && $request->country == null && $request->gender != null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1435,13 +1631,16 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
-                'gender' => $request->gender, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown != null
+                'gender' => $request->gender, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown != null
             && $request->country == null && $request->gender == null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1492,13 +1691,16 @@ class Combination extends Controller
                 })
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
-                'relationship_status' => $request->relationship_status, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown == null
+                'relationship_status' => $request->relationship_status, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown == null
             && $request->country != null && $request->gender != null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1535,13 +1737,16 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location,
-                'countries' => $request->country, 'gender' => $request->gender, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown == null
+                'countries' => $request->country, 'gender' => $request->gender, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown == null
             && $request->country != null && $request->gender == null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1578,14 +1783,17 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location,
                 'countries' => $request->country, 'relationship_status' => $request->relationship_status,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown == null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown == null
             && $request->country == null && $request->gender != null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1622,14 +1830,17 @@ class Combination extends Controller
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location,
                 'gender' => $request->gender, 'relationship_status' => $request->relationship_status,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown != null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown != null
             && $request->country != null && $request->gender != null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1666,13 +1877,16 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown,
-                'countries' => $request->country, 'gender' => $request->gender, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown != null
+                'countries' => $request->country, 'gender' => $request->gender, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown != null
             && $request->country != null && $request->gender == null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1709,14 +1923,17 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown,
                 'countries' => $request->country, 'relationship_status' => $request->relationship_status,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown == null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown == null
             && $request->country != null && $request->gender != null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1739,14 +1956,17 @@ class Combination extends Controller
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name,
                 'countries' => $request->country, 'gender' => $request->gender,
-                'relationship_status' => $request->relationship_status, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown != null
+                'relationship_status' => $request->relationship_status, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown != null
             && $request->country == null && $request->gender != null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1783,14 +2003,17 @@ class Combination extends Controller
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown,
                 'gender' => $request->gender, 'relationship_status' => $request->relationship_status,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown != null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown != null
             && $request->country != null && $request->gender != null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1833,13 +2056,16 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown,
-                'countries' => $request->country, 'gender' => $request->gender, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown != null
+                'countries' => $request->country, 'gender' => $request->gender, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown != null
             && $request->country != null && $request->gender == null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1882,14 +2108,17 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown,
                 'countries' => $request->country, 'relationship_status' => $request->relationship_status,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown != null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown != null
             && $request->country == null && $request->gender != null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1932,14 +2161,17 @@ class Combination extends Controller
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown,
                 'gender' => $request->gender, 'relationship_status' => $request->relationship_status,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown == null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown == null
             && $request->country != null && $request->gender != null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -1968,14 +2200,17 @@ class Combination extends Controller
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location,
                 'countries' => $request->country, 'gender' => $request->gender,
-                'relationship_status' => $request->relationship_status, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown != null
+                'relationship_status' => $request->relationship_status, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown != null
             && $request->country != null && $request->gender != null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -2004,14 +2239,17 @@ class Combination extends Controller
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'hometown' => $request->hometown,
                 'countries' => $request->country, 'gender' => $request->gender,
-                'relationship_status' => $request->relationship_status, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown != null
+                'relationship_status' => $request->relationship_status, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown != null
             && $request->country != null && $request->gender != null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -2064,13 +2302,16 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
-                'countries' => $request->country, 'gender' => $request->gender, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown != null
+                'countries' => $request->country, 'gender' => $request->gender, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown != null
             && $request->country != null && $request->gender == null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -2123,14 +2364,17 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
                 'countries' => $request->country, 'relationship_status' => $request->relationship_status,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown != null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown != null
             && $request->country == null && $request->gender != null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -2183,14 +2427,17 @@ class Combination extends Controller
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
                 'gender' => $request->gender, 'relationship_status' => $request->relationship_status,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown == null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown == null
             && $request->country != null && $request->gender != null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -2229,14 +2476,17 @@ class Combination extends Controller
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'countries' => $request->country,
                 'gender' => $request->gender, 'relationship_status' => $request->relationship_status,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown != null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown != null
             && $request->country != null && $request->gender != null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -2275,14 +2525,17 @@ class Combination extends Controller
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown, 'countries' => $request->country,
                 'gender' => $request->gender, 'relationship_status' => $request->relationship_status,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown != null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown != null
             && $request->country != null && $request->gender != null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -2327,14 +2580,17 @@ class Combination extends Controller
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown, 'countries' => $request->country,
                 'gender' => $request->gender, 'relationship_status' => $request->relationship_status,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown != null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown != null
             && $request->country != null && $request->gender != null && $request->relationship_status != null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -2389,37 +2645,42 @@ class Combination extends Controller
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
                 'countries' => $request->country, 'gender' => $request->gender,
-                'relationship_status' => $request->relationship_status, 'count' => $dataCount]);
-        }
-
-        elseif ($request->name == null && $request->location == null && $request->hometown == null &&
+                'relationship_status' => $request->relationship_status, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown == null &&
             $request->country == null && $request->countryInputName == null && $request->gender == null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
 
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
-                ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
-                ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown == null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown == null
             && $request->country == null && $request->countryInputName == null && $request->gender == null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->where(function ($query) use ($request) {
                     $query->where('first_name', '=', $request->name)
                         ->orWhere('last_name', '=', $request->name)
                         ->orWhere('full_name', '=', $request->name);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2428,14 +2689,17 @@ class Combination extends Controller
                         ->orWhere('last_name', '=', $request->name)
                         ->orWhere('full_name', '=', $request->name);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'name' => $request->name, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->location != null && $request->name == null && $request->hometown == null &&
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'name' => $request->name, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->location != null && $request->name == null && $request->hometown == null &&
             $request->country == null && $request->countryInputName == null && $request->gender == null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -2446,7 +2710,7 @@ class Combination extends Controller
                         ->orWhere('location_state', '=', ' ' . $request->location . "'")
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2458,14 +2722,17 @@ class Combination extends Controller
                         ->orWhere('location_state', '=', ' ' . $request->location . "'")
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'location' => $request->location, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->hometown != null && $request->name == null && $request->location == null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'location' => $request->location, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->hometown != null && $request->name == null && $request->location == null
             && $request->country == null && $request->countryInputName == null && $request->gender == null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -2476,7 +2743,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
 
@@ -2489,63 +2756,75 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'hometown' => $request->hometown, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->hometown == null && $request->name == null && $request->location == null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'hometown' => $request->hometown, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->hometown == null && $request->name == null && $request->location == null
             && $request->country != null && $request->gender == null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('country', '=', $request->country)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
                 ->where('country', '=', $request->country)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'countries' => $request->country, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->hometown == null && $request->name == null && $request->location == null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'countries' => $request->country, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->hometown == null && $request->name == null && $request->location == null
             && $request->country == null && $request->gender != null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
 
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'gender' => $request->gender, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->hometown == null && $request->name == null && $request->location == null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'gender' => $request->gender, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->hometown == null && $request->name == null && $request->location == null
             && $request->country == null && $request->gender == null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown == null
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
+                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown == null
             && $request->country == null && $request->gender == null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -2561,7 +2840,7 @@ class Combination extends Controller
                         ->orWhere('location_state', '=', ' ' . $request->location . "'")
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2578,15 +2857,18 @@ class Combination extends Controller
                         ->orWhere('location_state', '=', ' ' . $request->location . "'")
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'age' => $request->age,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown != null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown != null
             && $request->country == null && $request->gender == null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -2602,7 +2884,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2619,15 +2901,18 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown, 'age' => $request->age,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown == null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown == null
             && $request->country != null && $request->gender == null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('country', '=', $request->country)
@@ -2636,7 +2921,7 @@ class Combination extends Controller
                         ->orWhere('last_name', '=', $request->name)
                         ->orWhere('full_name', '=', $request->name);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2646,16 +2931,19 @@ class Combination extends Controller
                         ->orWhere('last_name', '=', $request->name)
                         ->orWhere('full_name', '=', $request->name);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
 
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'countries' => $request->country, 'age' => $request->age,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown == null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown == null
             && $request->country == null && $request->gender != null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('gender', '=', $request->gender)
@@ -2664,7 +2952,7 @@ class Combination extends Controller
                         ->orWhere('last_name', '=', $request->name)
                         ->orWhere('full_name', '=', $request->name);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2674,16 +2962,19 @@ class Combination extends Controller
                         ->orWhere('last_name', '=', $request->name)
                         ->orWhere('full_name', '=', $request->name);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
 
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'gender' => $request->gender, 'age' => $request->age,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown == null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown == null
             && $request->country == null && $request->gender == null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('relationship_status', '=', $request->relationship_status)
@@ -2692,7 +2983,7 @@ class Combination extends Controller
                         ->orWhere('last_name', '=', $request->name)
                         ->orWhere('full_name', '=', $request->name);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2702,15 +2993,18 @@ class Combination extends Controller
                         ->orWhere('last_name', '=', $request->name)
                         ->orWhere('full_name', '=', $request->name);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'relationship_status' => $request->relationship_status,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown != null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown != null
             && $request->country == null && $request->gender == null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -2729,7 +3023,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2749,15 +3043,18 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown, 'age' => $request->age,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown == null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown == null
             && $request->country != null && $request->gender == null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('country', '=', $request->country)
@@ -2769,7 +3066,7 @@ class Combination extends Controller
                         ->orWhere('location_state', '=', ' ' . $request->location . "'")
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2782,15 +3079,18 @@ class Combination extends Controller
                         ->orWhere('location_state', '=', ' ' . $request->location . "'")
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'countries' => $request->country, 'age' => $request->age,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown == null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown == null
             && $request->country == null && $request->gender != null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('gender', '=', $request->gender)
@@ -2802,7 +3102,7 @@ class Combination extends Controller
                         ->orWhere('location_state', '=', ' ' . $request->location . "'")
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2815,15 +3115,18 @@ class Combination extends Controller
                         ->orWhere('location_state', '=', ' ' . $request->location . "'")
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'gender' => $request->gender, 'age' => $request->age,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown == null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown == null
             && $request->country == null && $request->gender == null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('relationship_status', '=', $request->relationship_status)
@@ -2835,7 +3138,7 @@ class Combination extends Controller
                         ->orWhere('location_state', '=', ' ' . $request->location . "'")
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2848,15 +3151,18 @@ class Combination extends Controller
                         ->orWhere('location_state', '=', ' ' . $request->location . "'")
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'relationship_status' => $request->relationship_status,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown != null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown != null
             && $request->country != null && $request->gender == null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('country', '=', $request->country)
@@ -2868,7 +3174,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2881,15 +3187,18 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'hometown' => $request->hometown, 'countries' => $request->country, 'age' => $request->age,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown != null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown != null
             && $request->country == null && $request->gender != null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('gender', '=', $request->gender)
@@ -2901,7 +3210,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2914,15 +3223,18 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'hometown' => $request->hometown, 'gender' => $request->gender, 'age' => $request->age,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown != null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown != null
             && $request->country == null && $request->gender == null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('relationship_status', '=', $request->relationship_status)
@@ -2934,7 +3246,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -2947,72 +3259,84 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'hometown' => $request->hometown, 'relationship_status' => $request->relationship_status,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown == null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown == null
             && $request->country != null && $request->gender != null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'countries' => $request->country, 'gender' => $request->gender, 'age' => $request->age,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown == null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown == null
             && $request->country != null && $request->gender == null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'countries' => $request->country, 'relationship_status' => $request->relationship_status,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown == null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown == null
             && $request->country == null && $request->gender != null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'gender' => $request->gender, 'relationship_status' => $request->relationship_status,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown != null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown != null
             && $request->country == null && $request->gender == null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3034,7 +3358,7 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3057,15 +3381,18 @@ class Combination extends Controller
                         ->orWhere('hometown_state', '=', ' ' . $request->hometown . "'")
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown == null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown == null
             && $request->country != null && $request->gender == null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3081,7 +3408,7 @@ class Combination extends Controller
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
                 ->where('country', '=', $request->country)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3098,15 +3425,18 @@ class Combination extends Controller
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
                 ->where('country', '=', $request->country)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'countries' => $request->country,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown == null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown == null
             && $request->country == null && $request->gender != null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3122,7 +3452,7 @@ class Combination extends Controller
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3139,15 +3469,18 @@ class Combination extends Controller
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'gender' => $request->gender,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown == null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown == null
             && $request->country == null && $request->gender == null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3163,7 +3496,7 @@ class Combination extends Controller
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3180,15 +3513,18 @@ class Combination extends Controller
                         ->orWhere('location_region', '=', ' ' . $request->location);
                 })
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location,
-                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown != null
+                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown != null
             && $request->country != null && $request->gender == null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3204,7 +3540,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('country', '=', $request->country)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3221,15 +3557,18 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('country', '=', $request->country)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown, 'countries' => $request->country,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown != null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown != null
             && $request->country == null && $request->gender != null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3245,7 +3584,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3262,15 +3601,18 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown, 'gender' => $request->gender,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown != null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown != null
             && $request->country == null && $request->gender == null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3286,7 +3628,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3303,15 +3645,18 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown,
-                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown == null
+                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown == null
             && $request->country != null && $request->gender != null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3321,7 +3666,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3332,15 +3677,18 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'countries' => $request->country, 'gender' => $request->gender,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown == null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown == null
             && $request->country != null && $request->gender == null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3350,7 +3698,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3361,15 +3709,18 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'countries' => $request->country,
-                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown == null
+                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown == null
             && $request->country == null && $request->gender != null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3379,7 +3730,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3390,15 +3741,18 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'gender' => $request->gender,
-                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown != null
+                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown != null
             && $request->country != null && $request->gender == null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3418,7 +3772,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('country', '=', $request->country)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3439,15 +3793,18 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('country', '=', $request->country)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown,
-                'countries' => $request->country, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown != null
+                'countries' => $request->country, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown != null
             && $request->country == null && $request->gender != null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3467,7 +3824,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3488,15 +3845,18 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown,
-                'gender' => $request->gender, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown != null
+                'gender' => $request->gender, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown != null
             && $request->country == null && $request->gender == null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3516,7 +3876,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3537,15 +3897,18 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown,
-                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown == null
+                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown == null
             && $request->country != null && $request->gender != null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3558,7 +3921,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3572,15 +3935,18 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'countries' => $request->country,
-                'gender' => $request->gender, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown == null
+                'gender' => $request->gender, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown == null
             && $request->country != null && $request->gender == null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3593,7 +3959,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3607,15 +3973,18 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'countries' => $request->country,
-                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown == null
+                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown == null
             && $request->country == null && $request->gender != null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3628,7 +3997,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3642,15 +4011,18 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'gender' => $request->gender,
-                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown != null
+                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown != null
             && $request->country != null && $request->gender != null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3663,7 +4035,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3677,15 +4049,18 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'hometown' => $request->hometown, 'countries' => $request->country,
-                'gender' => $request->gender, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown != null
+                'gender' => $request->gender, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown != null
             && $request->country != null && $request->gender == null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3698,7 +4073,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3712,15 +4087,18 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'hometown' => $request->hometown, 'countries' => $request->country,
-                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown != null
+                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown != null
             && $request->country == null && $request->gender != null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3733,7 +4111,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3747,36 +4125,42 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'hometown' => $request->hometown, 'gender' => $request->gender,
-                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown == null
+                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown == null
             && $request->country != null && $request->gender != null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'countries' => $request->country, 'gender' => $request->gender,
-                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown != null
+                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown != null
             && $request->country != null && $request->gender == null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3801,7 +4185,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('country', '=', $request->country)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3827,15 +4211,18 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('country', '=', $request->country)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
-                'countries' => $request->country, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown != null
+                'countries' => $request->country, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown != null
             && $request->country == null && $request->gender != null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3860,7 +4247,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3886,15 +4273,18 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
-                'gender' => $request->gender, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown != null
+                'gender' => $request->gender, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown != null
             && $request->country == null && $request->gender == null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3919,7 +4309,7 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3945,15 +4335,18 @@ class Combination extends Controller
                         ->orWhere('hometown_region', '=', ' ' . $request->hometown);
                 })
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
-                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown == null
+                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown == null
             && $request->country != null && $request->gender != null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -3971,7 +4364,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -3990,15 +4383,18 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location,
-                'countries' => $request->country, 'gender' => $request->gender, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown == null
+                'countries' => $request->country, 'gender' => $request->gender, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown == null
             && $request->country != null && $request->gender == null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -4016,7 +4412,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4035,16 +4431,19 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location,
                 'countries' => $request->country, 'relationship_status' => $request->relationship_status,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown == null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown == null
             && $request->country == null && $request->gender != null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -4062,7 +4461,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4081,16 +4480,19 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location,
                 'gender' => $request->gender, 'relationship_status' => $request->relationship_status,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown != null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown != null
             && $request->country != null && $request->gender != null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -4108,7 +4510,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4127,16 +4529,19 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown,
                 'countries' => $request->country, 'gender' => $request->gender,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown != null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown != null
             && $request->country != null && $request->gender == null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -4154,7 +4559,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4173,16 +4578,19 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown,
                 'countries' => $request->country, 'relationship_status' => $request->relationship_status,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown == null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown == null
             && $request->country != null && $request->gender != null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -4193,7 +4601,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4205,16 +4613,19 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name,
                 'countries' => $request->country, 'gender' => $request->gender,
-                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown != null
+                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown != null
             && $request->country == null && $request->gender != null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -4232,7 +4643,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4251,16 +4662,19 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown,
                 'gender' => $request->gender, 'relationship_status' => $request->relationship_status,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown != null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown != null
             && $request->country != null && $request->gender != null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -4281,7 +4695,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4303,15 +4717,18 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown,
-                'countries' => $request->country, 'gender' => $request->gender, 'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown != null
+                'countries' => $request->country, 'gender' => $request->gender, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown != null
             && $request->country != null && $request->gender == null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -4332,7 +4749,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4354,16 +4771,19 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown,
                 'countries' => $request->country, 'relationship_status' => $request->relationship_status,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown != null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown != null
             && $request->country == null && $request->gender != null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -4384,7 +4804,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4406,16 +4826,19 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown,
                 'gender' => $request->gender, 'relationship_status' => $request->relationship_status,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown == null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown == null
             && $request->country != null && $request->gender != null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -4429,7 +4852,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4444,17 +4867,20 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location,
                 'countries' => $request->country, 'gender' => $request->gender,
                 'relationship_status' => $request->relationship_status, 'age' => $request->age,
-                'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location == null && $request->hometown != null
+                'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown != null
             && $request->country != null && $request->gender != null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -4468,7 +4894,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4483,17 +4909,20 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'hometown' => $request->hometown,
                 'countries' => $request->country, 'gender' => $request->gender,
                 'relationship_status' => $request->relationship_status,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown != null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown != null
             && $request->country != null && $request->gender != null && $request->relationship_status == null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -4519,7 +4948,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4546,16 +4975,19 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
                 'countries' => $request->country, 'gender' => $request->gender,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown != null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown != null
             && $request->country != null && $request->gender == null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -4581,7 +5013,7 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4608,16 +5040,19 @@ class Combination extends Controller
                 })
                 ->where('country', '=', $request->country)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
                 'countries' => $request->country, 'relationship_status' => $request->relationship_status,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown != null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown != null
             && $request->country == null && $request->gender != null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -4643,7 +5078,7 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4670,16 +5105,19 @@ class Combination extends Controller
                 })
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
                 'gender' => $request->gender, 'relationship_status' => $request->relationship_status,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown == null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown == null
             && $request->country != null && $request->gender != null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -4698,7 +5136,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4718,16 +5156,19 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'countries' => $request->country,
                 'gender' => $request->gender, 'relationship_status' => $request->relationship_status,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location == null && $request->hometown != null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location == null && $request->hometown != null
             && $request->country != null && $request->gender != null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -4746,7 +5187,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4766,16 +5207,19 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'hometown' => $request->hometown, 'countries' => $request->country,
                 'gender' => $request->gender, 'relationship_status' => $request->relationship_status,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name == null && $request->location != null && $request->hometown != null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location != null && $request->hometown != null
             && $request->country != null && $request->gender != null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -4797,7 +5241,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4820,16 +5264,19 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'location' => $request->location, 'hometown' => $request->hometown, 'countries' => $request->country,
                 'gender' => $request->gender, 'relationship_status' => $request->relationship_status,
-                'age' => $request->age, 'count' => $dataCount]);
-        }
-        elseif ($request->name != null && $request->location != null && $request->hometown != null
+                'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name != null && $request->location != null && $request->hometown != null
             && $request->country != null && $request->gender != null && $request->relationship_status != null
-            && $request->age != null) {
+            && $request->age != null
+        ) {
             $this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where(function ($query) use ($request) {
@@ -4856,7 +5303,7 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->orderBy('full_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
@@ -4884,34 +5331,33 @@ class Combination extends Controller
                 ->where('country', '=', $request->country)
                 ->where('gender', '=', $request->gender)
                 ->where('relationship_status', '=', $request->relationship_status)
-                  ->where('age', 'like', '%/'.$age)
+                ->where('age', 'like', '%/' . $age)
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            return view('userDashboard.people', [
+                'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'location' => $request->location, 'hometown' => $request->hometown,
                 'countries' => $request->country, 'gender' => $request->gender,
-                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount]);
-        }
-
-        elseif ($request->name == null && $request->location == null && $request->hometown == null
+                'relationship_status' => $request->relationship_status, 'age' => $request->age, 'count' => $dataCount
+            ]);
+        } elseif (
+            $request->name == null && $request->location == null && $request->hometown == null
             && $request->country == null && $request->gender == null && $request->relationship_status == null
-            && $request->age == null) {
+            && $request->age == null
+        ) {
             $this->countries = Country::all();
             $this->allDataIds = DownloadedList::where('userId', Auth::user()->id)->get();
             $getdownloadedIds = 0;
-            foreach ($this->allDataIds as $dataIds)
-            {
-                $getdownloadedIds = $getdownloadedIds.','.$dataIds->downloadedIds;
+            foreach ($this->allDataIds as $dataIds) {
+                $getdownloadedIds = $getdownloadedIds . ',' . $dataIds->downloadedIds;
             }
 
             $this->allData = DB::table('phone_lists')
-                ->whereNotIn('id', explode(',',$getdownloadedIds))
+                ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->orderBy('first_name', 'ASC')
                 ->paginate(15);
             $dataCount = DB::table('phone_lists')
                 ->count();
-            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries, 'count'=>$dataCount]);
+            return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries, 'count' => $dataCount]);
         }
-
     }
-
 }
