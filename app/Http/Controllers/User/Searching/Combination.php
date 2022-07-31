@@ -24,8 +24,8 @@ class Combination extends Controller
 
     public function filter_data($request)
     {
-        $query = DB::table('phone_lists')
-            // $query = QueryBuilder::for(PhoneList::class)
+        // $query = DB::table('phone_lists')
+        $query = QueryBuilder::for(PhoneList::class)
             ->whereNotIn('id', explode(',', $this->getdownloadedId));
 
         if ($request->name != null) {
