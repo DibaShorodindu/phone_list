@@ -10,6 +10,7 @@ use App\Models\PhoneList;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\QueryBuilder;
 use Str;
 
 
@@ -137,7 +138,20 @@ class Combination extends Controller
             && $request->country == null && $request->countryInputName == null && $request->gender == null && $request->relationship_status == null
             && $request->age == null
         ) {
-            $this->allData = DB::table('phone_lists')
+            $this->allData = QueryBuilder::for(PhoneList::class)
+                ->whereNotIn('id', explode(',', $getdownloadedIds))
+                ->where('first_name', '=', $request->name)
+                ->orWhere('last_name', '=', $request->name)
+                ->orWhere('full_name', '=', $request->name)
+                ->orderBy('full_name', 'ASC')
+                ->paginate(15);
+            $dataCount = QueryBuilder::for(PhoneList::class)
+                ->whereNotIn('id', explode(',', $getdownloadedIds))
+                ->where('first_name', '=', $request->name)
+                ->orWhere('last_name', '=', $request->name)
+                ->orWhere('full_name', '=', $request->name)
+                ->count();
+            /*$this->allData = DB::table('phone_lists')
                 ->whereNotIn('id', explode(',', $getdownloadedIds))
                 ->where('first_name', '=', $request->name)
                 ->orWhere('last_name', '=', $request->name)
@@ -150,7 +164,7 @@ class Combination extends Controller
                 ->where('first_name', '=', $request->name)
                 ->orWhere('last_name', '=', $request->name)
                 ->orWhere('full_name', '=', $request->name)
-                ->count();
+                ->count();*/
             return view('userDashboard.people', [
                 'allData' => $this->allData, 'country' => $this->countries,
                 'name' => $request->name, 'count' => $dataCount
