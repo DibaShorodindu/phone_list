@@ -22,6 +22,7 @@ use Session;
 use Illuminate\Support\Facades\Auth;
 use Storage;
 use Symfony\Component\Console\Input\Input;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class UserController extends Controller
 {
@@ -313,20 +314,65 @@ class UserController extends Controller
     public function people()
     {
         $this->countries = Country::all();
-        $this->allDataIds = DownloadedList::where('userId', Auth::user()->id)->get();
-            $getdownloadedIds = 0;
-            foreach ($this->allDataIds as $dataIds)
-            {
-                $getdownloadedIds = $getdownloadedIds.','.$dataIds->downloadedIds;
-            }
-
-            $this->allData = DB::table('phone_lists')
-                ->whereNotIn('id', explode(',',$getdownloadedIds))
-                ->orderBy('first_name', 'ASC')
-                ->paginate(15);
-        $dataCount = DB::table('phone_lists')
+        $dataCount = QueryBuilder::for(PhoneList::class)
+            ->select('id')
             ->count();
-        return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries, 'count'=>$dataCount]);
+        return view('userDashboard.people', ['country' => $this->countries, 'count'=>$dataCount]);
+    }
+    public function people_search(Request $request)
+    {
+        $this->countries = Country::all();
+        $this->allData = QueryBuilder::for(PhoneList::class)
+            ->select(
+                'id',
+                'first_name',
+                'last_name',
+                'age',
+                'work',
+                'country',
+                'gender',
+                'relationship_status',
+                'education_last_year',
+                'location',
+                'location_city',
+                'hometown',
+                'hometown_city'
+            )
+            ->where('first_name', '=', $request->people)
+            ->orWhere('last_name', '=', $request->people)
+            ->orWhere('full_name', '=', $request->people)
+            ->orWhere('location', '=', $request->people)
+            ->orWhere('location_city', '=', $request->people)
+            ->orWhere('location_city', '=', ' ' . $request->people)
+            ->orWhere('location_state', '=', ' ' . $request->people)
+            ->orWhere('location_state', '=', ' ' . $request->people . "'")
+            ->orWhere('location_region', '=', ' ' . $request->people)
+            ->orWhere('hometown', '=', $request->people)
+            ->orwhere('hometown_city', '=', $request->people)
+            ->orwhere('hometown_city', '=', ' ' . $request->people)
+            ->orWhere('hometown_state', '=', ' ' . $request->people)
+            ->orWhere('hometown_state', '=', ' ' . $request->people . "'")
+            ->orWhere('hometown_region', '=', ' ' . $request->people)
+            ->orWhere('country', '=', $request->people)
+            ->orWhere('gender', '=', $request->people)
+            ->orWhere('relationship_status', '=', $request->people)
+            ->orWhere('age', 'like', '%/'.$request->people)
+            ->take(15)
+            ->get();
+
+        /*$query =  DB::table('phone_lists');
+        $query->where('full_name', 'like', '%'.$request->people.'%')
+            ->orWhere('location', 'like', '%'.$request->people.'%')
+            ->orWhere('hometown', 'like', '%'.$request->people.'%')
+            ->orWhere('country', '=', $request->people)
+            ->orWhere('gender', '=', $request->people)
+            ->orWhere('relationship_status', '=', $request->people)
+            ->orWhere('age', 'like', '%/'.$request->people);
+        $this->allData = $query->orderBy('full_name', 'ASC')
+                                ->take(15)
+                                ->get();*/
+        return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
+            'people' => $request->people]);
     }
     public function people_gender($gender)
     {

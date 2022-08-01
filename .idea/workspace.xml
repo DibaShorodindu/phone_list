@@ -3,9 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="195c716c-338c-476f-a757-d1e2532142da" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/adminAsset/assets/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/adminAsset/assets/css/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/adminAsset/assets/sass/pages/_userDashboard.scss" beforeDir="false" afterPath="$PROJECT_DIR$/adminAsset/assets/sass/pages/_userDashboard.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/User/Searching/DataSearch.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/User/Searching/DataSearch.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/Payment/PaymentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/Payment/PaymentController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/User/Searching/Combination.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/User/Searching/Combination.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/userDashboard/settings/plans/billingRequest.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/userDashboard/settings/plans/billingRequest.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -75,7 +75,6 @@
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-iconv" />
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-idn" />
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-icu" />
-      <path value="$PROJECT_DIR$/vendor/symfony/mailer" />
       <path value="$PROJECT_DIR$/vendor/symfony/http-kernel" />
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-ctype" />
       <path value="$PROJECT_DIR$/vendor/symfony/mime" />
@@ -180,6 +179,8 @@
       <path value="$PROJECT_DIR$/vendor/sebastian/object-enumerator" />
       <path value="$PROJECT_DIR$/vendor/sebastian/object-reflector" />
       <path value="$PROJECT_DIR$/vendor/laravel-crypto-payment-gateway/images" />
+      <path value="$PROJECT_DIR$/vendor/spatie/laravel-query-builder" />
+      <path value="$PROJECT_DIR$/vendor/symfony/mailer" />
     </include_path>
   </component>
   <component name="ProjectId" id="2CF2tAlT2G8BFRTmWBiprkxLNnG" />
@@ -191,7 +192,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/resources/views/userDashboard/settings/plans/billingRequest.blade.php" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/resources/views/userDashboard/settings/plans/billingRequest.blade.php" />
     <property name="vue.rearranger.settings.migration" value="true" />
@@ -223,7 +224,12 @@
       <workItem from="1658730102831" duration="12010000" />
       <workItem from="1658805369032" duration="19538000" />
       <workItem from="1658891112333" duration="27942000" />
-      <workItem from="1658978151929" duration="24396000" />
+      <workItem from="1658978151929" duration="28226000" />
+      <workItem from="1659236831762" duration="8491000" />
+      <workItem from="1659247335313" duration="685000" />
+      <workItem from="1659248033496" duration="16150000" />
+      <workItem from="1659324247048" duration="545000" />
+      <workItem from="1659325471071" duration="10355000" />
     </task>
     <servers />
   </component>
@@ -241,5 +247,16 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/resources/views/userDashboard/people.blade.php</url>
+          <line>536</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

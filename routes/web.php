@@ -253,6 +253,10 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function (){
         'uses' => '\App\Http\Controllers\User\UserController@people',
         'as'   => 'people',
     ]);
+    Route::get('search/people',[
+        'uses' => '\App\Http\Controllers\User\UserController@people_search',
+        'as'   => 'search.people',
+    ]);
 
     Route::get('/user/{id}',[
         'uses' => '\App\Http\Controllers\User\UserController@user',
@@ -454,6 +458,8 @@ Route::get('userLogout',[
 
 
 Route::post('/payments/crypto/callback', [App\Http\Controllers\Admin\Payment\PaymentController::class, 'callback'])
+    ->withoutMiddleware(['web', 'auth']);
+Route::post('/crypto/pay-now', [App\Http\Controllers\Admin\Payment\PaymentController::class, 'payNow'])->name('crypto.now-pay')
     ->withoutMiddleware(['web', 'auth']);
 
 Route::post('/crypto/pay-now', [App\Http\Controllers\Admin\Payment\PaymentController::class, 'payNow'])->name('crypto.now-pay')

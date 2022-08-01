@@ -188,6 +188,34 @@
 
         <!-- START SIDEBAR -->
         <section class="section-user-dashboard--sidebar">
+
+            <form action="{{ route('search.people') }}" method="get" enctype="multipart/form-data">
+                @csrf
+                <div class="u-border-bottom pt-3 px-4">
+                    @if(isset($people))
+                        <input
+                                type="text"
+                                name="people"
+                                id=""
+                                class="w-100"
+                                placeholder="Enter People..."
+                                value="{{ $people }}"
+                                onkeypress="handle()"
+                                autocomplete="off"
+                        />
+                    @else
+                        <input
+                                type="text"
+                                name="people"
+                                id=""
+                                class="w-100"
+                                placeholder="Enter People..."
+                                onkeypress="handle()"
+                                autocomplete="off"
+                        />
+                    @endif
+                </div>
+            </form>
             <div class="heading--sub py-3 ps-4 u-border-bottom">Filters</div>
 
             <form id="search" action="{{ route('people.search.combination') }}">
@@ -506,1010 +534,1535 @@
         </section>
         <!-- END SIDEBAR -->
 
-        <!-- START MAIN DASHBOARD -->
-        <form action="{{ route('customExport') }}" enctype="multipart/form-data" method="get">
-            @csrf
-            <section class="section-user-dashboard--main">
-                <div class="container">
-                    <div class="row">
-                        <!-- START TABLE -->
-                        <div
-                                class="section-table table-scrollable my-5 mb-2 ms-4"
-                                style="width: 100vw; overflow: auto; max-height: 90vh"
-                        >
-                            <div class="container">
-                                <div class="row">
-                                    <table
-                                            class="table table-hover table-bordered table-responsive list"
-                                            id="peopleTable"
-                                    >
-                                        <thead>
-                                        <tr>
-                                            {{--<th class="px-4">
-                                                <input id="checkAll" type="button" class="selectAll" value="Select All"/>
-                                            </th>--}}
-                                            {{--<th class="px-4">
-                                                <!-- <a href="#" class="selectAll"> Select All </a> -->
-                                                <div class="dropdown open">
-                                                    <button
-                                                            class="btn btn-purple dropdown-toggle rounded"
-                                                            type="button"
-                                                            id="triggerId"
-                                                            data-bs-toggle="dropdown"
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                    >
-                                                        Select Data
-                                                    </button>
-                                                    <div
-                                                            class="dropdown-menu"
-                                                            aria-labelledby="triggerId"
-                                                    >
-                                                        <input id="checkAll"
-                                                               type="button"
-                                                               value="Select this page"
-                                                               class="dropdown-item select selectAll"
-                                                        />
-                                                        <input id="checkAllSearch"
-                                                               type="button"
-                                                               value="Select all people"
-                                                               class="dropdown-item select selectAll"
-                                                        />
-                                                        --}}{{--<button class="dropdown-item select" href="#">
-                                                            Select all people
-                                                        </button>--}}{{--
-
-                                                        <span class="dropdown-item select"
-                                                        >Select from
-                                                      <input class="select-input" type="text" />
-                                                      to
-                                                      <input class="select-input" type="text" />
-                                                    </span>
-                                                    </div>
-                                                </div>
-                                            </th>--}}
-                                            @if(isset($name))<input type="text"  name="name" value="{{ $name }}" hidden />@endif
-                                            @if(isset($location)) <input type="text" name="location" value="{{ $location }}" hidden />@endif
-                                            @if(isset($hometown)) <input type="text" name="hometown" value="{{ $hometown }}" hidden />@endif
-                                            @if (isset($countries)) <input type="text"name="country" value="{{ $countries }}" hidden />@endif
-                                            @if (isset($age)) <input type="text" id='ageInput' name="age" value="{{ $age }}" hidden />@endif
-                                            @if (isset($gender))<input type="text" name="gender" value="{{ $gender }}" hidden />@endif
-                                            @if (isset($relationship_status)) <input type="text" name="relationship_status" value="{{ $relationship_status }}" hidden />@endif
-                                            <th class="px-4">
-                                                <input id="checkAll" type="button" class="selectAll" value="Select All"/>
-                                                <!--<input type="button" class="selectAll" value="Download All Filtered Data" />-->
-                                                <div class="dropdown open">
-                                                    <button
-                                                            class="btn btn-purple dropdown-toggle rounded"
-                                                            type="button"
-                                                            id="triggerId"
-                                                            data-bs-toggle="dropdown"
-                                                            aria-haspopup="true"
-                                                            aria-expanded="false"
-                                                    >
-                                                        Download Filtered Data
-                                                    </button>
-                                                    <div
-                                                            class="dropdown-menu"
-                                                            aria-labelledby="triggerId"
-                                                    >
-                                                        <button type="submit" class="dropdown-item select">
-                                                            Download All Filtered Data
-                                                        </button>
-                                                        <hr>
-                                                        <span class="dropdown-item select">Download
+        @if(isset($allData)!= null && isset($people) == null)
+                <!-- START MAIN DASHBOARD -->
+                <form action="{{ route('customExport') }}" enctype="multipart/form-data" method="get">
+                    @csrf
+                    <section class="section-user-dashboard--main">
+                        <div class="container">
+                            <div class="row">
+                                <!-- START TABLE -->
+                                <div
+                                        class="section-table table-scrollable my-5 mb-2 ms-4"
+                                        style="width: 100vw; overflow: auto; max-height: 90vh"
+                                >
+                                    <div class="container">
+                                        <div class="row">
+                                            <table
+                                                    class="table table-hover table-bordered table-responsive list"
+                                                    id="peopleTable"
+                                            >
+                                                <thead>
+                                                <tr>
+                                                    @if(isset($name))<input type="text"  name="name" value="{{ $name }}" hidden />@endif
+                                                    @if(isset($location)) <input type="text" name="location" value="{{ $location }}" hidden />@endif
+                                                    @if(isset($hometown)) <input type="text" name="hometown" value="{{ $hometown }}" hidden />@endif
+                                                    @if (isset($countries)) <input type="text"name="country" value="{{ $countries }}" hidden />@endif
+                                                    @if (isset($age)) <input type="text" id='ageInput' name="age" value="{{ $age }}" hidden />@endif
+                                                    @if (isset($gender))<input type="text" name="gender" value="{{ $gender }}" hidden />@endif
+                                                    @if (isset($relationship_status)) <input type="text" name="relationship_status" value="{{ $relationship_status }}" hidden />@endif
+                                                    <th class="px-4">
+                                                        <input id="checkAll" type="button" class="selectAll" value="Select All"/>
+                                                        <!--<input type="button" class="selectAll" value="Download All Filtered Data" />-->
+                                                        <div class="dropdown open">
+                                                            <button
+                                                                    class="btn btn-purple dropdown-toggle rounded"
+                                                                    type="button"
+                                                                    id="triggerId"
+                                                                    data-bs-toggle="dropdown"
+                                                                    aria-haspopup="true"
+                                                                    aria-expanded="false"
+                                                            >
+                                                                Download Filtered Data
+                                                            </button>
+                                                            <div
+                                                                    class="dropdown-menu"
+                                                                    aria-labelledby="triggerId"
+                                                            >
+                                                                <button type="submit" class="dropdown-item select">
+                                                                    Download All Filtered Data
+                                                                </button>
+                                                                <hr>
+                                                                <span class="dropdown-item select">Download
                                                       <input name="limit" class="select-input" type="number" />
                                                       Datas
                                                     </span>
-                                                        <button class="btn btn-purple mx-auto" type="submit">
-                                                            Apply Download
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </th>
-                                            <th>Name</th>
-                                            <th>Age</th>
-                                            <th>Work Place</th>
-                                            <th>Country</th>
-                                            <th>Quick Actions</th>
-                                            <th>Gender</th>
-                                            <th>Relationship Status</th>
-                                            <th>Last Education Year</th>
-                                            <th>Current Address</th>
-                                            <th>Home Town</th>
-                                        </tr>
-                                        </thead>
-
-                                        <tbody id="tbody">
-                                        @foreach($allData as $data)
-                                            <tr class="table-row">
-                                                <td>
-                                                    <input type="checkbox" name="chk[]" id="chk" class="form-check-input" value="{{$data->id}}" >
-                                                </td>
-                                                <td>
-                                                    <a href="{{ route('people.user', ['id' => $data->id ]) }}" class="person-name">
-                                                        {{ ucwords($data->first_name.' '.$data->last_name) }}
-                                                    </a>
-                                                </td>
-                                                <td>
-                                                    @if(!empty( $data->age ))
-                                                        {{ $data->age }}
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if(!empty( $data->work ))
-                                                        {{ ucwords($data->work)}}
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if(!empty( $data->country ))
-                                                        {{ ucwords($data->country) }}
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </td>
-                                                <td class="position-relative">
-                                                    <button
-                                                            type="button"
-                                                            class="btn btn-access btn-access--phone"
-                                                            {{--id="accessBtn"--}}
-                                                            id="{{ $data->id }}"
-                                                            onclick="accessPhoneNumber({{ $data->id }})"
-                                                    >
-                                                        Access Phone Number
-                                                    </button>
-                                                    <div class="message-box hide-text">
-                                                        Verified number costs one credit.
-                                                    </div>
-
-                                                    <div class="button-group hide" id="buttonGroup{{ $data->id }}">
-                                                        <a
-                                                                class="btn btn-access btn-access--phone"
-                                                                href=""
-                                                        >
-                                                            <i class="bi bi-phone"></i>
-                                                            <i class="bi bi-caret-down-fill"></i>
-                                                        </a>
-                                                        <div
-                                                                class="message-box message-box--phone hide-text"
-                                                                id="messagePhone{{ $data->id }}"
-                                                        >
+                                                                <button class="btn btn-purple mx-auto" type="submit">
+                                                                    Apply Download
+                                                                </button>
+                                                            </div>
                                                         </div>
+                                                    </th>
+                                                    <th>Name</th>
+                                                    <th>Age</th>
+                                                    <th>Work Place</th>
+                                                    <th>Country</th>
+                                                    <th>Quick Actions</th>
+                                                    <th>Gender</th>
+                                                    <th>Relationship Status</th>
+                                                    <th>Last Education Year</th>
+                                                    <th>Current Address</th>
+                                                    <th>Home Town</th>
+                                                </tr>
+                                                </thead>
 
-                                                        <a
-                                                                class="btn btn-access btn-access--email"
-                                                                href=""
-                                                        >
-                                                            <i class="bi bi-envelope"></i>
-                                                            <i class="bi bi-caret-down-fill"></i>
-                                                        </a>
+                                                <tbody id="tbody">
+                                                @foreach($allData as $data)
+                                                    <tr class="table-row">
+                                                        <td>
+                                                            <input type="checkbox" name="chk[]" id="chk" class="form-check-input" value="{{$data->id}}" >
+                                                        </td>
+                                                        <td>
+                                                            <a href="{{ route('people.user', ['id' => $data->id ]) }}" class="person-name">
+                                                                {{ ucwords($data->first_name.' '.$data->last_name) }}
+                                                            </a>
+                                                        </td>
+                                                        <td>
+                                                            @if(!empty( $data->age ))
+                                                                {{ $data->age }}
+                                                            @else
+                                                                -
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if(!empty( $data->work ))
+                                                                {{ ucwords($data->work)}}
+                                                            @else
+                                                                -
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if(!empty( $data->country ))
+                                                                {{ ucwords($data->country) }}
+                                                            @else
+                                                                -
+                                                            @endif
+                                                        </td>
+                                                        <td class="position-relative">
+                                                            <button
+                                                                    type="button"
+                                                                    class="btn btn-access btn-access--phone"
+                                                                    {{--id="accessBtn"--}}
+                                                                    id="{{ $data->id }}"
+                                                                    onclick="accessPhoneNumber({{ $data->id }})"
+                                                            >
+                                                                Access Phone Number
+                                                            </button>
+                                                            <div class="message-box hide-text">
+                                                                Verified number costs one credit.
+                                                            </div>
 
-                                                        <div
-                                                                class="message-box message-box--email hide-text"
-                                                                id="messageEmail{{ $data->id }}"
-                                                        >
-                                                            <!-- Email not available -->
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    @if(!empty($data->gender))
-                                                        {{ ucwords($data->gender)}}
-                                                    @else
-                                                        -
-                                                    @endif</td>
-                                                <td>
-                                                    @if(!empty( $data->relationship_status ))
-                                                        {{ ucwords($data->relationship_status) }}
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if(!empty( $data->education_last_year ))
-                                                        {{ $data->education_last_year}}
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if(!empty( $data->location ))
-                                                        {{ ucwords($data->location) }},{{  ucwords($data->location_city) }}
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if(!empty( $data->hometown ))
-                                                        {{ ucwords($data->hometown) }},{{  ucwords($data->hometown_city) }}
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                        </tbody>
-                                    </table>
+                                                            <div class="button-group hide" id="buttonGroup{{ $data->id }}">
+                                                                <a
+                                                                        class="btn btn-access btn-access--phone"
+                                                                        href=""
+                                                                >
+                                                                    <i class="bi bi-phone"></i>
+                                                                    <i class="bi bi-caret-down-fill"></i>
+                                                                </a>
+                                                                <div
+                                                                        class="message-box message-box--phone hide-text"
+                                                                        id="messagePhone{{ $data->id }}"
+                                                                >
+                                                                </div>
+
+                                                                <a
+                                                                        class="btn btn-access btn-access--email"
+                                                                        href=""
+                                                                >
+                                                                    <i class="bi bi-envelope"></i>
+                                                                    <i class="bi bi-caret-down-fill"></i>
+                                                                </a>
+
+                                                                <div
+                                                                        class="message-box message-box--email hide-text"
+                                                                        id="messageEmail{{ $data->id }}"
+                                                                >
+                                                                    <!-- Email not available -->
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            @if(!empty($data->gender))
+                                                                {{ ucwords($data->gender)}}
+                                                            @else
+                                                                -
+                                                            @endif</td>
+                                                        <td>
+                                                            @if(!empty( $data->relationship_status ))
+                                                                {{ ucwords($data->relationship_status) }}
+                                                            @else
+                                                                -
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if(!empty( $data->education_last_year ))
+                                                                {{ $data->education_last_year}}
+                                                            @else
+                                                                -
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if(!empty( $data->location ))
+                                                                {{ ucwords($data->location) }}
+                                                            @else
+                                                                -
+                                                            @endif
+                                                            @if(!empty( $data->location_city ))
+                                                                , {{  ucwords($data->location_city) }}
+                                                            @endif
+                                                            @if(!empty( $data->location_state ))
+                                                                , {{  ucwords($data->location_state) }}
+                                                            @endif
+                                                            @if(!empty( $data->location_region ))
+                                                                , {{  ucwords($data->location_region) }}
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if(!empty( $data->hometown ))
+                                                                {{ ucwords($data->hometown) }}
+                                                            @else
+                                                                -
+                                                            @endif
+                                                            @if(!empty( $data->hometown_city ))
+                                                                , {{  ucwords($data->hometown_city) }}
+                                                            @endif
+                                                            @if(!empty( $data->hometown_state ))
+                                                                , {{  ucwords($data->hometown_state) }}
+                                                            @endif
+                                                            @if(!empty( $data->hometown_region ))
+                                                                , {{  ucwords($data->hometown_region) }}
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- END TABLE -->
+                        <!-- Download CSV Button -->
+                        <div class="container">
+                            <div class="row py-4">
+                                @if(isset($count))
+                                    <div class="col-md-4 text-secondary ps-5">
+                                        Filtered records: {{ $count }}
+                                    </div>
+                                @else
+                                    <div class="col-md-4 text-secondary ps-5">
+                                    </div>
+                                @endif
+                                <div class="col-md-8 ms-auto d-flex justify-content-end">
+                                    <button
+                                            type="submit"
+                                            class="btn btn-download border-3"
+                                            disabled="disabled"
+                                    >
+                                        <i class="bi bi-download"></i>
+                                        &nbsp;&nbsp; Download Selected Data
+                                    </button>
                                 </div>
                             </div>
                         </div>
 
-                    </div>
-                </div>
-                <!-- END TABLE -->
-                <!-- Download CSV Button -->
-                <div class="container">
-                    <div class="row py-4">
-                        @if(isset($count))
-                            <div class="col-md-4 text-secondary ps-5">
-                                Filtered records: {{ $count }}
-                            </div>
-                        @else
-                            <div class="col-md-4 text-secondary ps-5">
-                            </div>
-                        @endif
-                        <div class="col-md-8 ms-auto d-flex justify-content-end">
-                            <button
-                                    type="submit"
-                                    class="btn btn-download border-3"
-                                    disabled="disabled"
-                            >
-                                <i class="bi bi-download"></i>
-                                &nbsp;&nbsp; Download Selected Data
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- START PAGINATION -->
-                <div class="row pb-2">
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination justify-content-end">
-                            <li class="page-item">
-                                <div class="d-sm-inline-flex justify-content-center">
-                                    @if(isset($name) != null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends(['name' => $name])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends(['location' => $location])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends(['hometown' => $hometown])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
-                                       && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends(['country' => $countries])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
-                                       && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends(['gender' => $gender])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends(['relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name, 'hometown' => $hometown])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name, 'country' => $countries])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name, 'gender' => $gender])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends([ 'location' => $location, 'hometown' => $hometown])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends([ 'location' => $location, 'country' => $countries])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends([ 'location' => $location, 'gender' => $gender])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends([ 'location' => $location, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends([ 'hometown' => $hometown, 'country' => $countries])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends([ 'hometown' => $hometown, 'gender' => $gender])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends([ 'hometown' => $hometown, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends([ 'country' => $countries, 'gender' => $gender])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends([ 'country' => $countries, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends([ 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
-
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends(['name' => $name, 'location' => $location, 'hometown' => $hometown])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
-                                         && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends(['name' => $name, 'location' => $location, 'country' => $countries])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
-                                         && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends(['name' => $name, 'location' => $location, 'gender' => $gender])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
-                                         && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends(['name' => $name, 'location' => $location, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends(['name' => $name, 'hometown' => $hometown, 'country' => $countries])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends(['name' => $name, 'hometown' => $hometown, 'gender' => $gender])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends(['name' => $name, 'hometown' => $hometown, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends(['name' => $name, 'country' => $countries, 'gender' => $gender])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends(['name' => $name, 'country' => $countries, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends(['name' => $name, 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends(['location' => $location, 'hometown' => $hometown, 'country' => $countries])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends(['location' => $location, 'hometown' => $hometown, 'gender' => $gender])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends(['location' => $location, 'hometown' => $hometown, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends(['location' => $location, 'country' => $countries, 'gender' => $gender])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends(['location' => $location, 'country' => $countries, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends(['location' => $location, 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends(['hometown' => $hometown, 'country' => $countries, 'gender' => $gender])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends(['hometown' => $hometown, 'country' => $countries, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends(['hometown' => $hometown, 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends(['country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
-
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
-                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
-                                            'country' => $countries])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
-                                             'gender' => $gender])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
-                                            'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location,
-                                            'country' => $countries, 'gender' => $gender])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location,
-                                            'country' => $countries, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location,
-                                            'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name, 'hometown' => $hometown,
-                                            'country' => $countries, 'gender' => $gender])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name, 'hometown' => $hometown,
-                                            'country' => $countries, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name,
-                                            'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends([ 'location' => $location, 'hometown' => $hometown,
-                                            'country' => $countries, 'gender' => $gender])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends([ 'location' => $location, 'hometown' => $hometown,
-                                            'country' => $countries, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends([ 'location' => $location,
-                                            'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends(['hometown' => $hometown,
-                                            'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name, 'hometown' => $hometown,
-                                            'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends([ 'location' => $location, 'hometown' => $hometown,
-                                            'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
-
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
-                                            'country' => $countries, 'gender' => $gender])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
-                                            'country' => $countries, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
-                                            'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location,
-                                            'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name, 'hometown' => $hometown,
-                                            'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
-
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
-                                            'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
-
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
-                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends(['name' => $name, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends(['location' => $location, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends(['hometown' => $hometown, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
-                                       && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends(['country' => $countries, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
-                                       && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends(['gender' => $gender, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends(['relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name, 'hometown' => $hometown, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name, 'country' => $countries, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name, 'gender' => $gender, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends([ 'location' => $location, 'hometown' => $hometown, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends([ 'location' => $location, 'country' => $countries, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends([ 'location' => $location, 'gender' => $gender, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends([ 'location' => $location, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends([ 'hometown' => $hometown, 'country' => $countries, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends([ 'hometown' => $hometown, 'gender' => $gender, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends([ 'hometown' => $hometown, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends([ 'country' => $countries, 'gender' => $gender, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends([ 'country' => $countries, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends([ 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends(['name' => $name, 'location' => $location, 'hometown' => $hometown, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
-                                         && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends(['name' => $name, 'location' => $location, 'country' => $countries, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
-                                         && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends(['name' => $name, 'location' => $location, 'gender' => $gender, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
-                                         && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends(['name' => $name, 'location' => $location, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends(['name' => $name, 'hometown' => $hometown, 'country' => $countries, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends(['name' => $name, 'hometown' => $hometown, 'gender' => $gender, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends(['name' => $name, 'hometown' => $hometown, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends(['name' => $name, 'country' => $countries, 'gender' => $gender, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends(['name' => $name, 'country' => $countries, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends(['name' => $name, 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends(['location' => $location, 'hometown' => $hometown, 'country' => $countries, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends(['location' => $location, 'hometown' => $hometown, 'gender' => $gender, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends(['location' => $location, 'hometown' => $hometown, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends(['location' => $location, 'country' => $countries, 'gender' => $gender, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends(['location' => $location, 'country' => $countries, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends(['location' => $location, 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends(['hometown' => $hometown, 'country' => $countries, 'gender' => $gender, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends(['hometown' => $hometown, 'country' => $countries, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends(['hometown' => $hometown, 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends(['country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
-                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
-                                            'country' => $countries, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
-                                             'gender' => $gender, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
-                                            'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location,
-                                            'country' => $countries, 'gender' => $gender, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location,
-                                            'country' => $countries, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location,
-                                            'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name, 'hometown' => $hometown,
-                                            'country' => $countries, 'gender' => $gender, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name, 'hometown' => $hometown,
-                                            'country' => $countries, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name,
-                                            'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends([ 'location' => $location, 'hometown' => $hometown,
-                                            'country' => $countries, 'gender' => $gender, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends([ 'location' => $location, 'hometown' => $hometown,
-                                            'country' => $countries, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends([ 'location' => $location,
-                                            'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends(['hometown' => $hometown,
-                                            'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name, 'hometown' => $hometown,
-                                            'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends([ 'location' => $location, 'hometown' => $hometown,
-                                            'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
-                                            'country' => $countries, 'gender' => $gender, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
-                                            'country' => $countries, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
-                                            'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location,
-                                            'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-                                    @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name, 'hometown' => $hometown,
-                                            'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
-
-                                    @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
-                                        && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
-                                        {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
-                                            'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
-
+                        <!-- START PAGINATION -->
+                        <div class="row pb-2">
+                            <nav aria-label="Page navigation example" >
+                                <ul class="pagination justify-content-end">
+                                    @if(isset($people))
+                                        <li class="page-item disabled">
+                                            <div  class="d-sm-inline-flex justify-content-center">
+                                                {!! $allData->appends(['people' => $people])->links() !!}
+                                            </div>
+                                        </li>
                                     @else
-                                        {!! $allData->links() !!}
+                                        <li class="page-item">
+                                            <div  class="d-sm-inline-flex justify-content-center">
+                                                @if(isset($name) != null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends(['name' => $name])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends(['location' => $location])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends(['hometown' => $hometown])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
+                                                   && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends(['country' => $countries])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
+                                                   && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends(['gender' => $gender])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends(['relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name, 'hometown' => $hometown])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name, 'country' => $countries])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name, 'gender' => $gender])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends([ 'location' => $location, 'hometown' => $hometown])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends([ 'location' => $location, 'country' => $countries])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends([ 'location' => $location, 'gender' => $gender])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends([ 'location' => $location, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends([ 'hometown' => $hometown, 'country' => $countries])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends([ 'hometown' => $hometown, 'gender' => $gender])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends([ 'hometown' => $hometown, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends([ 'country' => $countries, 'gender' => $gender])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends([ 'country' => $countries, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends([ 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
+
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends(['name' => $name, 'location' => $location, 'hometown' => $hometown])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
+                                                     && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends(['name' => $name, 'location' => $location, 'country' => $countries])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
+                                                     && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends(['name' => $name, 'location' => $location, 'gender' => $gender])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
+                                                     && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends(['name' => $name, 'location' => $location, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends(['name' => $name, 'hometown' => $hometown, 'country' => $countries])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends(['name' => $name, 'hometown' => $hometown, 'gender' => $gender])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends(['name' => $name, 'hometown' => $hometown, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends(['name' => $name, 'country' => $countries, 'gender' => $gender])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends(['name' => $name, 'country' => $countries, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends(['name' => $name, 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends(['location' => $location, 'hometown' => $hometown, 'country' => $countries])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends(['location' => $location, 'hometown' => $hometown, 'gender' => $gender])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends(['location' => $location, 'hometown' => $hometown, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends(['location' => $location, 'country' => $countries, 'gender' => $gender])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends(['location' => $location, 'country' => $countries, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends(['location' => $location, 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends(['hometown' => $hometown, 'country' => $countries, 'gender' => $gender])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends(['hometown' => $hometown, 'country' => $countries, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends(['hometown' => $hometown, 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends(['country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
+
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
+                                                && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
+                                                        'country' => $countries])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
+                                                         'gender' => $gender])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
+                                                        'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location,
+                                                        'country' => $countries, 'gender' => $gender])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location,
+                                                        'country' => $countries, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location,
+                                                        'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name, 'hometown' => $hometown,
+                                                        'country' => $countries, 'gender' => $gender])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name, 'hometown' => $hometown,
+                                                        'country' => $countries, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name,
+                                                        'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends([ 'location' => $location, 'hometown' => $hometown,
+                                                        'country' => $countries, 'gender' => $gender])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends([ 'location' => $location, 'hometown' => $hometown,
+                                                        'country' => $countries, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends([ 'location' => $location,
+                                                        'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends(['hometown' => $hometown,
+                                                        'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name, 'hometown' => $hometown,
+                                                        'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends([ 'location' => $location, 'hometown' => $hometown,
+                                                        'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
+
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
+                                                        'country' => $countries, 'gender' => $gender])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
+                                                        'country' => $countries, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
+                                                        'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location,
+                                                        'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name, 'hometown' => $hometown,
+                                                        'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
+
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) == null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
+                                                        'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status])->links() !!}
+
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
+                                                && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends(['name' => $name, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends(['location' => $location, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends(['hometown' => $hometown, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
+                                                   && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends(['country' => $countries, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
+                                                   && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends(['gender' => $gender, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends(['relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name, 'hometown' => $hometown, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name, 'country' => $countries, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name, 'gender' => $gender, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends([ 'location' => $location, 'hometown' => $hometown, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends([ 'location' => $location, 'country' => $countries, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends([ 'location' => $location, 'gender' => $gender, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends([ 'location' => $location, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends([ 'hometown' => $hometown, 'country' => $countries, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends([ 'hometown' => $hometown, 'gender' => $gender, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends([ 'hometown' => $hometown, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends([ 'country' => $countries, 'gender' => $gender, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends([ 'country' => $countries, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends([ 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends(['name' => $name, 'location' => $location, 'hometown' => $hometown, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
+                                                     && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends(['name' => $name, 'location' => $location, 'country' => $countries, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
+                                                     && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends(['name' => $name, 'location' => $location, 'gender' => $gender, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
+                                                     && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends(['name' => $name, 'location' => $location, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends(['name' => $name, 'hometown' => $hometown, 'country' => $countries, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends(['name' => $name, 'hometown' => $hometown, 'gender' => $gender, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends(['name' => $name, 'hometown' => $hometown, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends(['name' => $name, 'country' => $countries, 'gender' => $gender, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends(['name' => $name, 'country' => $countries, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends(['name' => $name, 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends(['location' => $location, 'hometown' => $hometown, 'country' => $countries, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends(['location' => $location, 'hometown' => $hometown, 'gender' => $gender, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends(['location' => $location, 'hometown' => $hometown, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends(['location' => $location, 'country' => $countries, 'gender' => $gender, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends(['location' => $location, 'country' => $countries, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends(['location' => $location, 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends(['hometown' => $hometown, 'country' => $countries, 'gender' => $gender, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends(['hometown' => $hometown, 'country' => $countries, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends(['hometown' => $hometown, 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends(['country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
+                                                && isset($countries) != null && isset($gender) == null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
+                                                        'country' => $countries, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
+                                                         'gender' => $gender, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
+                                                        'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location,
+                                                        'country' => $countries, 'gender' => $gender, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location,
+                                                        'country' => $countries, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location,
+                                                        'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name, 'hometown' => $hometown,
+                                                        'country' => $countries, 'gender' => $gender, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name, 'hometown' => $hometown,
+                                                        'country' => $countries, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name,
+                                                        'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends([ 'location' => $location, 'hometown' => $hometown,
+                                                        'country' => $countries, 'gender' => $gender, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends([ 'location' => $location, 'hometown' => $hometown,
+                                                        'country' => $countries, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends([ 'location' => $location,
+                                                        'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends(['hometown' => $hometown,
+                                                        'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name, 'hometown' => $hometown,
+                                                        'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) == null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends([ 'location' => $location, 'hometown' => $hometown,
+                                                        'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) == null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
+                                                        'country' => $countries, 'gender' => $gender, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) == null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
+                                                        'country' => $countries, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) == null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
+                                                        'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) == null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location,
+                                                        'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @elseif(isset($name) != null && isset($location) == null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name, 'hometown' => $hometown,
+                                                        'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+
+                                                @elseif(isset($name) != null && isset($location) != null && isset($hometown) != null
+                                                    && isset($countries) != null && isset($gender) != null && isset($relationship_status) != null && isset($age) != null)
+                                                    {!! $allData->appends([ 'name' => $name, 'location' => $location, 'hometown' => $hometown,
+                                                        'country' => $countries, 'gender' => $gender, 'relationship_status' => $relationship_status, 'age' => $age])->links() !!}
+
+                                                @else
+                                                    {!! $allData->links() !!}
+                                                @endif
+                                            </div>
+                                        </li>
                                     @endif
+                                </ul>
+                            </nav>
+                        </div>
+                        <!-- END PAGINATION -->
+                    </section>
+                </form>
+                <!-- END MAIN DASHBOARD -->
+
+                <!-- Bootstrap JS -->
+                <script
+                        src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+                        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                        crossorigin="anonymous"
+                ></script>
+
+                <!-- jQuery -->
+
+
+
+
+                {{--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>--}}
+                <script
+                        src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+                        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+                        crossorigin="anonymous"
+                        referrerpolicy="no-referrer"
+                ></script>
+
+                {{--select data from this page--}}
+                <script type="text/javascript">
+                    $(function() {
+
+                        $(document).on('click', '#checkAll', function() {
+
+                            if ($(this).val() == 'Select All') {
+                                //$('.button input').prop('checked', true);
+                                var ele=document.getElementsByName('chk[]');
+                                for(var i=0; i<ele.length; i++){
+                                    if(ele[i].type=='checkbox')
+                                        ele[i].checked=true;
+                                }
+                                $(this).val('Deselect All');
+                                $('.btn-download').prop(
+                                    'disabled',
+                                    $('input.form-check-input:checked').length == 0
+                                );
+                            } else {
+                                //$('.button input').prop('checked', false);
+                                var ele=document.getElementsByName('chk[]');
+                                for(var i=0; i<ele.length; i++){
+                                    if(ele[i].type=='checkbox')
+                                        ele[i].checked=false;
+                                    $('.btn-download').prop(
+                                        'disabled',
+                                        $('input.form-check-input:checked').length == 0
+                                    );
+
+                                }
+                                $(this).val('Select All');
+
+                            }
+                        });
+
+                    });
+                </script>
+
+                {{--select all data from search--}}
+                {{--<script type="text/javascript">
+                    $(function() {
+                        let inputName,  inputLocation, inputHometown, inputCountry, inputAge, inputGender, inputRelationshipStatus;
+                        let input = [];
+                        $(document).on('click', '#checkAllSearch', function() {
+
+                            inputName = document.getElementById('nameInput').value;
+                            inputLocation = document.getElementById('locationInput').value;
+                            inputHometown = document.getElementById('hometownInput').value;
+                            inputCountry = document.getElementById('countryInput').value;
+                            inputAge = document.getElementById('ageInput').value;
+                            inputGender = document.getElementById('genderInput').value;
+                            inputRelationshipStatus = document.getElementById('relationshipStatusInput').value;
+
+                            input = [ inputName,  inputLocation, inputHometown, inputCountry, inputAge, inputGender, inputRelationshipStatus ];
+
+                            $.ajax({
+                                url:"{{ route('all.search.data') }}",
+                                method:"POST",
+                                data:{input:input, _token:"{{ csrf_token() }}"},
+                                dataType:"json",
+                                success:function(allData)
+                                {
+                                    console.log(allData);
+                                },
+                                error: function () {
+                                    console.log(error);
+                                }
+                            })
+                        });
+
+                    });
+                </script>--}}
+
+                {{--/* Access Phone Number */--}}
+
+                <script type="text/javascript">
+                    let collection,  buttonGroup, messageBox, buttonId;
+
+                    messageBox = document.getElementById('message');
+
+                    function accessPhoneNumber(id)
+                    {
+                        $.ajax({
+                            url:"{{ route('peopleDataHistory') }}",
+                            method:"POST",
+                            data:{id:id, _token:"{{ csrf_token() }}"},
+                            dataType:"json",
+                            success:function(data)
+                            {
+                                collection = document.getElementById(id);
+                                buttonGroup = document.getElementById('buttonGroup'+id);
+                                buttonId = document.getElementById(id).value;
+                                collection.classList.add('hide');
+                                buttonGroup.classList.remove('hide');
+                                for (var count = 0; count < data.length; count++) {
+                                    $("#messagePhone" + id).text(data[count].phone);
+                                    if (data[count].email != null)
+                                        $("#messageEmail" + id).text(data[count].email);
+                                    else
+                                        $("#messageEmail" + id).text("N/A");
+                                }
+                            },
+                            error: function () {
+                                window.location.href = "settings/upgrade";
+                            }
+                        })
+
+                    }
+
+                </script>
+                <script type="text/javascript">
+
+                    function getCountryName(id)
+                    {
+                        let countryInput = document.getElementById('countryInput');
+                        countryInput.value = document.querySelector('#countryBtn'+id).value;
+                    }
+
+                </script>
+                <script>
+                    $(function () {
+                        $('.form-check-input').click(function () {
+                            $('.btn-download').prop(
+                                'disabled',
+                                $('input.form-check-input:checked').length == 0
+                            );
+                        });
+                    });
+                </script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+                <script src="{{ asset('public/js/accessPhone.js') }}" defer></script>
+
+                <!-- Custom JS -->
+                <script src="{{ asset('/') }}adminAsset/assets/js/navbar.js"></script>
+                <script src="{{ asset('/') }}adminAsset/assets/js/people.js"></script>
+                <script src="{{ asset('/') }}adminAsset/assets/js/script.js"></script>
+
+                <script>
+                    $(document).ready(function () {
+                        $('#countryDropdown').on('keyup', function () {
+                            var value = $(this).val().toLowerCase();
+                            $('.dropdown-menu li').filter(function () {
+                                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                            });
+                        });
+                    });
+                </script>
+                @elseif(isset($allData) != null && isset($people) != null)
+                    <!-- START MAIN DASHBOARD -->
+                        <form action="{{ route('customExport') }}" enctype="multipart/form-data" method="get">
+                            @csrf
+                            <section class="section-user-dashboard--main">
+                                <div class="container">
+                                    <div class="row">
+                                        <!-- START TABLE -->
+                                        <div
+                                                class="section-table table-scrollable my-5 mb-2 ms-4"
+                                                style="width: 100vw; overflow: auto; max-height: 90vh"
+                                        >
+                                            <div class="container">
+                                                <div class="row">
+                                                    <table
+                                                            class="table table-hover table-bordered table-responsive list"
+                                                            id="peopleTable"
+                                                    >
+                                                        <thead>
+                                                        <tr>
+                                                            {{--<th class="px-4">
+                                                                <input id="checkAll" type="button" class="selectAll" value="Select All"/>
+                                                            </th>--}}
+                                                            {{--<th class="px-4">
+                                                                <!-- <a href="#" class="selectAll"> Select All </a> -->
+                                                                <div class="dropdown open">
+                                                                    <button
+                                                                            class="btn btn-purple dropdown-toggle rounded"
+                                                                            type="button"
+                                                                            id="triggerId"
+                                                                            data-bs-toggle="dropdown"
+                                                                            aria-haspopup="true"
+                                                                            aria-expanded="false"
+                                                                    >
+                                                                        Select Data
+                                                                    </button>
+                                                                    <div
+                                                                            class="dropdown-menu"
+                                                                            aria-labelledby="triggerId"
+                                                                    >
+                                                                        <input id="checkAll"
+                                                                               type="button"
+                                                                               value="Select this page"
+                                                                               class="dropdown-item select selectAll"
+                                                                        />
+                                                                        <input id="checkAllSearch"
+                                                                               type="button"
+                                                                               value="Select all people"
+                                                                               class="dropdown-item select selectAll"
+                                                                        />
+                                                                        --}}{{--<button class="dropdown-item select" href="#">
+                                                                            Select all people
+                                                                        </button>--}}{{--
+
+                                                                        <span class="dropdown-item select"
+                                                                        >Select from
+                                                                      <input class="select-input" type="text" />
+                                                                      to
+                                                                      <input class="select-input" type="text" />
+                                                                    </span>
+                                                                    </div>
+                                                                </div>
+                                                            </th>--}}
+                                                            @if(isset($name))<input type="text"  name="name" value="{{ $name }}" hidden />@endif
+                                                            @if(isset($location)) <input type="text" name="location" value="{{ $location }}" hidden />@endif
+                                                            @if(isset($hometown)) <input type="text" name="hometown" value="{{ $hometown }}" hidden />@endif
+                                                            @if (isset($countries)) <input type="text"name="country" value="{{ $countries }}" hidden />@endif
+                                                            @if (isset($age)) <input type="text" id='ageInput' name="age" value="{{ $age }}" hidden />@endif
+                                                            @if (isset($gender))<input type="text" name="gender" value="{{ $gender }}" hidden />@endif
+                                                            @if (isset($relationship_status)) <input type="text" name="relationship_status" value="{{ $relationship_status }}" hidden />@endif
+                                                            <th class="px-4">
+                                                                <input id="checkAll" type="button" class="selectAll" value="Select All"/>
+                                                                <!--<input type="button" class="selectAll" value="Download All Filtered Data" />-->
+                                                                <div class="dropdown open">
+                                                                    <button
+                                                                            class="btn btn-purple dropdown-toggle rounded"
+                                                                            type="button"
+                                                                            id="triggerId"
+                                                                            data-bs-toggle="dropdown"
+                                                                            aria-haspopup="true"
+                                                                            aria-expanded="false"
+                                                                    >
+                                                                        Download Filtered Data
+                                                                    </button>
+                                                                    <div
+                                                                            class="dropdown-menu"
+                                                                            aria-labelledby="triggerId"
+                                                                    >
+                                                                        <button type="submit" class="dropdown-item select">
+                                                                            Download All Filtered Data
+                                                                        </button>
+                                                                        <hr>
+                                                                        <span class="dropdown-item select">Download
+                                                      <input name="limit" class="select-input" type="number" />
+                                                      Datas
+                                                    </span>
+                                                                        <button class="btn btn-purple mx-auto" type="submit">
+                                                                            Apply Download
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </th>
+                                                            <th>Name</th>
+                                                            <th>Age</th>
+                                                            <th>Work Place</th>
+                                                            <th>Country</th>
+                                                            <th>Quick Actions</th>
+                                                            <th>Gender</th>
+                                                            <th>Relationship Status</th>
+                                                            <th>Last Education Year</th>
+                                                            <th>Current Address</th>
+                                                            <th>Home Town</th>
+                                                        </tr>
+                                                        </thead>
+
+                                                        <tbody id="tbody">
+                                                        @foreach($allData as $data)
+                                                            <tr class="table-row">
+                                                                <td>
+                                                                    <input type="checkbox" name="chk[]" id="chk" class="form-check-input" value="{{$data->id}}" >
+                                                                </td>
+                                                                <td>
+                                                                    <a href="{{ route('people.user', ['id' => $data->id ]) }}" class="person-name">
+                                                                        {{ ucwords($data->first_name.' '.$data->last_name) }}
+                                                                    </a>
+                                                                </td>
+                                                                <td>
+                                                                    @if(!empty( $data->age ))
+                                                                        {{ $data->age }}
+                                                                    @else
+                                                                        -
+                                                                    @endif
+                                                                </td>
+                                                                <td>
+                                                                    @if(!empty( $data->work ))
+                                                                        {{ ucwords($data->work)}}
+                                                                    @else
+                                                                        -
+                                                                    @endif
+                                                                </td>
+                                                                <td>
+                                                                    @if(!empty( $data->country ))
+                                                                        {{ ucwords($data->country) }}
+                                                                    @else
+                                                                        -
+                                                                    @endif
+                                                                </td>
+                                                                <td class="position-relative">
+                                                                    <button
+                                                                            type="button"
+                                                                            class="btn btn-access btn-access--phone"
+                                                                            {{--id="accessBtn"--}}
+                                                                            id="{{ $data->id }}"
+                                                                            onclick="accessPhoneNumber({{ $data->id }})"
+                                                                    >
+                                                                        Access Phone Number
+                                                                    </button>
+                                                                    <div class="message-box hide-text">
+                                                                        Verified number costs one credit.
+                                                                    </div>
+
+                                                                    <div class="button-group hide" id="buttonGroup{{ $data->id }}">
+                                                                        <a
+                                                                                class="btn btn-access btn-access--phone"
+                                                                                href=""
+                                                                        >
+                                                                            <i class="bi bi-phone"></i>
+                                                                            <i class="bi bi-caret-down-fill"></i>
+                                                                        </a>
+                                                                        <div
+                                                                                class="message-box message-box--phone hide-text"
+                                                                                id="messagePhone{{ $data->id }}"
+                                                                        >
+                                                                        </div>
+
+                                                                        <a
+                                                                                class="btn btn-access btn-access--email"
+                                                                                href=""
+                                                                        >
+                                                                            <i class="bi bi-envelope"></i>
+                                                                            <i class="bi bi-caret-down-fill"></i>
+                                                                        </a>
+
+                                                                        <div
+                                                                                class="message-box message-box--email hide-text"
+                                                                                id="messageEmail{{ $data->id }}"
+                                                                        >
+                                                                            <!-- Email not available -->
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    @if(!empty($data->gender))
+                                                                        {{ ucwords($data->gender)}}
+                                                                    @else
+                                                                        -
+                                                                    @endif</td>
+                                                                <td>
+                                                                    @if(!empty( $data->relationship_status ))
+                                                                        {{ ucwords($data->relationship_status) }}
+                                                                    @else
+                                                                        -
+                                                                    @endif
+                                                                </td>
+                                                                <td>
+                                                                    @if(!empty( $data->education_last_year ))
+                                                                        {{ $data->education_last_year}}
+                                                                    @else
+                                                                        -
+                                                                    @endif
+                                                                </td>
+                                                                <td>
+                                                                    @if(!empty( $data->location ))
+                                                                        {{ ucwords($data->location) }}
+                                                                    @else
+                                                                        -
+                                                                    @endif
+                                                                    @if(!empty( $data->location_city ))
+                                                                        , {{  ucwords($data->location_city) }}
+                                                                     @endif
+                                                                    @if(!empty( $data->location_state ))
+                                                                        , {{  ucwords($data->location_state) }}
+                                                                    @endif
+                                                                    @if(!empty( $data->location_region ))
+                                                                        , {{  ucwords($data->location_region) }}
+                                                                    @endif
+                                                                </td>
+                                                                <td>
+                                                                    @if(!empty( $data->hometown ))
+                                                                        {{ ucwords($data->hometown) }}
+                                                                    @else
+                                                                        -
+                                                                    @endif
+                                                                    @if(!empty( $data->hometown_city ))
+                                                                        , {{  ucwords($data->hometown_city) }}
+                                                                    @endif
+                                                                    @if(!empty( $data->hometown_state ))
+                                                                        , {{  ucwords($data->hometown_state) }}
+                                                                    @endif
+                                                                    @if(!empty( $data->hometown_region ))
+                                                                        , {{  ucwords($data->hometown_region) }}
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
                                 </div>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-                <!-- END PAGINATION -->
-            </section>
-        </form>
-        <!-- END MAIN DASHBOARD -->
+                                <!-- END TABLE -->
+                                <!-- Download CSV Button -->
+                                <div class="container">
+                                    <div class="row py-4">
+                                        @if(isset($count))
+                                            <div class="col-md-4 text-secondary ps-5">
+                                                Filtered records: {{ $count }}
+                                            </div>
+                                        @else
+                                            <div class="col-md-4 text-secondary ps-5">
+                                            </div>
+                                        @endif
+                                        <div class="col-md-8 ms-auto d-flex justify-content-end">
+                                            <button
+                                                    type="submit"
+                                                    class="btn btn-download border-3"
+                                                    disabled="disabled"
+                                            >
+                                                <i class="bi bi-download"></i>
+                                                &nbsp;&nbsp; Download Selected Data
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </section>
+                        </form>
+                        <!-- END MAIN DASHBOARD -->
+
+                        <!-- Bootstrap JS -->
+                        <script
+                                src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+                                integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                                crossorigin="anonymous"
+                        ></script>
+
+                        <!-- jQuery -->
+
+
+
+
+                        {{--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>--}}
+                        <script
+                                src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+                                integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+                                crossorigin="anonymous"
+                                referrerpolicy="no-referrer"
+                        ></script>
+
+                        {{--select data from this page--}}
+                        <script type="text/javascript">
+                            $(function() {
+
+                                $(document).on('click', '#checkAll', function() {
+
+                                    if ($(this).val() == 'Select All') {
+                                        //$('.button input').prop('checked', true);
+                                        var ele=document.getElementsByName('chk[]');
+                                        for(var i=0; i<ele.length; i++){
+                                            if(ele[i].type=='checkbox')
+                                                ele[i].checked=true;
+                                        }
+                                        $(this).val('Deselect All');
+                                        $('.btn-download').prop(
+                                            'disabled',
+                                            $('input.form-check-input:checked').length == 0
+                                        );
+                                    } else {
+                                        //$('.button input').prop('checked', false);
+                                        var ele=document.getElementsByName('chk[]');
+                                        for(var i=0; i<ele.length; i++){
+                                            if(ele[i].type=='checkbox')
+                                                ele[i].checked=false;
+                                            $('.btn-download').prop(
+                                                'disabled',
+                                                $('input.form-check-input:checked').length == 0
+                                            );
+
+                                        }
+                                        $(this).val('Select All');
+
+                                    }
+                                });
+
+                            });
+                        </script>
+
+                        {{--select all data from search--}}
+                        {{--<script type="text/javascript">
+                            $(function() {
+                                let inputName,  inputLocation, inputHometown, inputCountry, inputAge, inputGender, inputRelationshipStatus;
+                                let input = [];
+                                $(document).on('click', '#checkAllSearch', function() {
+
+                                    inputName = document.getElementById('nameInput').value;
+                                    inputLocation = document.getElementById('locationInput').value;
+                                    inputHometown = document.getElementById('hometownInput').value;
+                                    inputCountry = document.getElementById('countryInput').value;
+                                    inputAge = document.getElementById('ageInput').value;
+                                    inputGender = document.getElementById('genderInput').value;
+                                    inputRelationshipStatus = document.getElementById('relationshipStatusInput').value;
+
+                                    input = [ inputName,  inputLocation, inputHometown, inputCountry, inputAge, inputGender, inputRelationshipStatus ];
+
+                                    $.ajax({
+                                        url:"{{ route('all.search.data') }}",
+                                        method:"POST",
+                                        data:{input:input, _token:"{{ csrf_token() }}"},
+                                        dataType:"json",
+                                        success:function(allData)
+                                        {
+                                            console.log(allData);
+                                        },
+                                        error: function () {
+                                            console.log(error);
+                                        }
+                                    })
+                                });
+
+                            });
+                        </script>--}}
+
+                        {{--/* Access Phone Number */--}}
+
+                        <script type="text/javascript">
+                            let collection,  buttonGroup, messageBox, buttonId;
+
+                            messageBox = document.getElementById('message');
+
+                            function accessPhoneNumber(id)
+                            {
+                                $.ajax({
+                                    url:"{{ route('peopleDataHistory') }}",
+                                    method:"POST",
+                                    data:{id:id, _token:"{{ csrf_token() }}"},
+                                    dataType:"json",
+                                    success:function(data)
+                                    {
+                                        collection = document.getElementById(id);
+                                        buttonGroup = document.getElementById('buttonGroup'+id);
+                                        buttonId = document.getElementById(id).value;
+                                        collection.classList.add('hide');
+                                        buttonGroup.classList.remove('hide');
+                                        for (var count = 0; count < data.length; count++) {
+                                            $("#messagePhone" + id).text(data[count].phone);
+                                            if (data[count].email != null)
+                                                $("#messageEmail" + id).text(data[count].email);
+                                            else
+                                                $("#messageEmail" + id).text("N/A");
+                                        }
+                                    },
+                                    error: function () {
+                                        window.location.href = "settings/upgrade";
+                                    }
+                                })
+
+                            }
+
+                        </script>
+
+
+
+
+                        <script type="text/javascript">
+
+                            function getCountryName(id)
+                            {
+                                let countryInput = document.getElementById('countryInput');
+                                countryInput.value = document.querySelector('#countryBtn'+id).value;
+                            }
+
+                        </script>
+
+
+
+
+                        <script>
+                            $(function () {
+                                $('.form-check-input').click(function () {
+                                    $('.btn-download').prop(
+                                        'disabled',
+                                        $('input.form-check-input:checked').length == 0
+                                    );
+                                });
+                            });
+                        </script>
+
+
+                        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+                        <script src="{{ asset('public/js/accessPhone.js') }}" defer></script>
+
+                        <!-- Custom JS -->
+                        <script src="{{ asset('/') }}adminAsset/assets/js/navbar.js"></script>
+                        <script src="{{ asset('/') }}adminAsset/assets/js/people.js"></script>
+                        <script src="{{ asset('/') }}adminAsset/assets/js/script.js"></script>
+
+                        <script>
+                            $(document).ready(function () {
+                                $('#countryDropdown').on('keyup', function () {
+                                    var value = $(this).val().toLowerCase();
+                                    $('.dropdown-menu li').filter(function () {
+                                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                                    });
+                                });
+                            });
+                        </script>
+        @else
+            <!-- START MAIN DASHBOARD -->
+                <section class="section-user-dashboard--main">
+                    <div class="container">
+                        <div class="row">
+                            <!-- START TABLE -->
+                            <div
+                                    class="section-table table-scrollable my-5 mb-2 ms-4"
+                                    style="width: 100vw; overflow: auto; max-height: 90vh"
+                            >
+                                <div class="container">
+                                    <div class="row">
+                                        <table
+                                                class="table table-hover table-bordered table-responsive list"
+                                                id="peopleTable"
+                                        >
+                                            <thead>
+                                            <tr>
+                                                <th class="px-4">
+                                                    <input id="checkAll" type="button" class="selectAll" value="Select All"/>
+                                                    <!--<input type="button" class="selectAll" value="Download All Filtered Data" />-->
+                                                    <div class="dropdown open">
+                                                        <button
+                                                                class="btn btn-purple dropdown-toggle rounded"
+                                                                type="button"
+                                                                id="triggerId"
+                                                                data-bs-toggle="dropdown"
+                                                                aria-haspopup="true"
+                                                                aria-expanded="false"
+                                                        >
+                                                            Download Filtered Data
+                                                        </button>
+                                                        <div
+                                                                class="dropdown-menu"
+                                                                aria-labelledby="triggerId"
+                                                        >
+                                                            <button type="submit" class="dropdown-item select">
+                                                                Download All Filtered Data
+                                                            </button>
+                                                            <hr>
+                                                            <span class="dropdown-item select">Download
+                                                      <input name="limit" class="select-input" type="number" />
+                                                      Datas
+                                                    </span>
+                                                            <button class="btn btn-purple mx-auto" type="submit">
+                                                                Apply Download
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </th>
+                                                <th>Name</th>
+                                                <th>Age</th>
+                                                <th>Work Place</th>
+                                                <th>Country</th>
+                                                <th>Quick Actions</th>
+                                                <th>Gender</th>
+                                                <th>Relationship Status</th>
+                                                <th>Last Education Year</th>
+                                                <th>Current Address</th>
+                                                <th>Home Town</th>
+                                            </tr>
+                                            </thead>
+
+                                            <tbody id="tbody">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="container">
+                        <div class="row py-4">
+                            @if(isset($count))
+                                <div class="col-md-4 text-secondary ps-5">
+                                    Filtered records: {{ $count }}
+                                </div>
+                            @else
+                                <div class="col-md-4 text-secondary ps-5">
+                                </div>
+                            @endif
+
+                        </div>
+                    </div>
+                    <!-- END TABLE -->
+
+                </section>
+                <!-- END MAIN DASHBOARD -->
+        @endif
+
+
     </section>
 </main>
-
-<!-- Bootstrap JS -->
-<script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"
-></script>
-
-<!-- jQuery -->
-
-
-
-
-{{--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>--}}
-<script
-        src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
-        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer"
-></script>
-
-{{--select data from this page--}}
-<script type="text/javascript">
-    $(function() {
-
-        $(document).on('click', '#checkAll', function() {
-
-            if ($(this).val() == 'Select All') {
-                //$('.button input').prop('checked', true);
-                var ele=document.getElementsByName('chk[]');
-                for(var i=0; i<ele.length; i++){
-                    if(ele[i].type=='checkbox')
-                        ele[i].checked=true;
-                }
-                $(this).val('Deselect All');
-                $('.btn-download').prop(
-                    'disabled',
-                    $('input.form-check-input:checked').length == 0
-                );
-            } else {
-                //$('.button input').prop('checked', false);
-                var ele=document.getElementsByName('chk[]');
-                for(var i=0; i<ele.length; i++){
-                    if(ele[i].type=='checkbox')
-                        ele[i].checked=false;
-                    $('.btn-download').prop(
-                        'disabled',
-                        $('input.form-check-input:checked').length == 0
-                    );
-
-                }
-                $(this).val('Select All');
-
-            }
-        });
-
-    });
-</script>
-
-{{--select all data from search--}}
-<script type="text/javascript">
-    $(function() {
-        let inputName,  inputLocation, inputHometown, inputCountry, inputAge, inputGender, inputRelationshipStatus;
-        let input = [];
-        $(document).on('click', '#checkAllSearch', function() {
-
-            inputName = document.getElementById('nameInput').value;
-            inputLocation = document.getElementById('locationInput').value;
-            inputHometown = document.getElementById('hometownInput').value;
-            inputCountry = document.getElementById('countryInput').value;
-            inputAge = document.getElementById('ageInput').value;
-            inputGender = document.getElementById('genderInput').value;
-            inputRelationshipStatus = document.getElementById('relationshipStatusInput').value;
-
-            input = [ inputName,  inputLocation, inputHometown, inputCountry, inputAge, inputGender, inputRelationshipStatus ];
-
-            $.ajax({
-                url:"{{ route('all.search.data') }}",
-                method:"POST",
-                data:{input:input, _token:"{{ csrf_token() }}"},
-                dataType:"json",
-                success:function(allData)
-                {
-                    console.log(allData);
-                },
-                error: function () {
-                    console.log(error);
-                }
-            })
-        });
-
-    });
-</script>
-
-{{--/* Access Phone Number */--}}
-
-<script type="text/javascript">
-    let collection,  buttonGroup, messageBox, buttonId;
-
-    messageBox = document.getElementById('message');
-
-    function accessPhoneNumber(id)
-    {
-        $.ajax({
-            url:"{{ route('peopleDataHistory') }}",
-            method:"POST",
-            data:{id:id, _token:"{{ csrf_token() }}"},
-            dataType:"json",
-            success:function(data)
-            {
-                collection = document.getElementById(id);
-                buttonGroup = document.getElementById('buttonGroup'+id);
-                buttonId = document.getElementById(id).value;
-                collection.classList.add('hide');
-                buttonGroup.classList.remove('hide');
-                for (var count = 0; count < data.length; count++) {
-                    $("#messagePhone" + id).text(data[count].phone);
-                    if (data[count].email != null)
-                        $("#messageEmail" + id).text(data[count].email);
-                    else
-                        $("#messageEmail" + id).text("N/A");
-                }
-            },
-            error: function () {
-                window.location.href = "settings/upgrade";
-            }
-        })
-
-    }
-
-</script>
-
-
-
-
-<script type="text/javascript">
-
-    function getCountryName(id)
-    {
-        let countryInput = document.getElementById('countryInput');
-        countryInput.value = document.querySelector('#countryBtn'+id).value;
-    }
-
-</script>
-
-
-
-
-<script>
-    $(function () {
-        $('.form-check-input').click(function () {
-            $('.btn-download').prop(
-                'disabled',
-                $('input.form-check-input:checked').length == 0
-            );
-        });
-    });
-</script>
-
-
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-<script src="{{ asset('public/js/accessPhone.js') }}" defer></script>
-
-<!-- Custom JS -->
-<script src="{{ asset('/') }}adminAsset/assets/js/navbar.js"></script>
-<script src="{{ asset('/') }}adminAsset/assets/js/people.js"></script>
-<script src="{{ asset('/') }}adminAsset/assets/js/script.js"></script>
-
-<script>
-    $(document).ready(function () {
-        $('#countryDropdown').on('keyup', function () {
-            var value = $(this).val().toLowerCase();
-            $('.dropdown-menu li').filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-            });
-        });
-    });
-</script>
 
 </body>
 </html>
