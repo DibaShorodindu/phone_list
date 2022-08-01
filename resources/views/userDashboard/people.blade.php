@@ -605,7 +605,8 @@
                                                     <th>Home Town</th>
                                                 </tr>
                                                 </thead>
-
+                </form>
+                <form action="{{ route('download-data') }}" enctype="multipart/form-data" method="get">
                                                 <tbody id="tbody">
                                                 @foreach($allData as $data)
                                                     <tr class="table-row">
