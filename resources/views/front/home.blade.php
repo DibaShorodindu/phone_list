@@ -290,7 +290,7 @@
                         <div class="card border-0 bg-transparent">
                             <div class="card-body">
                                 <h4 class="card-title">
-                                    <span class="counter" data-count="{{ $rowcount }}"> 0 </span>
+                                    {{--<span class="counter" data-count="{{ $rowcount }}"> 0 </span>--}}
                                 </h4>
                                 <p class="card-text">mobile numbers</p>
                             </div>
@@ -301,7 +301,7 @@
                         <div class="card border-0 bg-transparent">
                             <div class="card-body">
                                 <h4 class="card-title">
-                                    <span class="counter" data-count="{{ $rowcount2 }}"> 0 </span>
+                                    {{--<span class="counter" data-count="{{ $rowcount2 }}"> 0 </span>--}}
                                 </h4>
                                 <p class="card-text">addresses</p>
                             </div>

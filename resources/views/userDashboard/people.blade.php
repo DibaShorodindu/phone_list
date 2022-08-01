@@ -704,16 +704,34 @@
                                                         </td>
                                                         <td>
                                                             @if(!empty( $data->location ))
-                                                                {{ ucwords($data->location) }},{{  ucwords($data->location_city) }}
+                                                                {{ ucwords($data->location) }}
                                                             @else
                                                                 -
+                                                            @endif
+                                                            @if(!empty( $data->location_city ))
+                                                                , {{  ucwords($data->location_city) }}
+                                                            @endif
+                                                            @if(!empty( $data->location_state ))
+                                                                , {{  ucwords($data->location_state) }}
+                                                            @endif
+                                                            @if(!empty( $data->location_region ))
+                                                                , {{  ucwords($data->location_region) }}
                                                             @endif
                                                         </td>
                                                         <td>
                                                             @if(!empty( $data->hometown ))
-                                                                {{ ucwords($data->hometown) }},{{  ucwords($data->hometown_city) }}
+                                                                {{ ucwords($data->hometown) }}
                                                             @else
                                                                 -
+                                                            @endif
+                                                            @if(!empty( $data->hometown_city ))
+                                                                , {{  ucwords($data->hometown_city) }}
+                                                            @endif
+                                                            @if(!empty( $data->hometown_state ))
+                                                                , {{  ucwords($data->hometown_state) }}
+                                                            @endif
+                                                            @if(!empty( $data->hometown_region ))
+                                                                , {{  ucwords($data->hometown_region) }}
                                                             @endif
                                                         </td>
                                                     </tr>
@@ -1705,16 +1723,34 @@
                                                                 </td>
                                                                 <td>
                                                                     @if(!empty( $data->location ))
-                                                                        {{ ucwords($data->location) }},{{  ucwords($data->location_city) }}
+                                                                        {{ ucwords($data->location) }}
                                                                     @else
                                                                         -
+                                                                    @endif
+                                                                    @if(!empty( $data->location_city ))
+                                                                        , {{  ucwords($data->location_city) }}
+                                                                     @endif
+                                                                    @if(!empty( $data->location_state ))
+                                                                        , {{  ucwords($data->location_state) }}
+                                                                    @endif
+                                                                    @if(!empty( $data->location_region ))
+                                                                        , {{  ucwords($data->location_region) }}
                                                                     @endif
                                                                 </td>
                                                                 <td>
                                                                     @if(!empty( $data->hometown ))
-                                                                        {{ ucwords($data->hometown) }},{{  ucwords($data->hometown_city) }}
+                                                                        {{ ucwords($data->hometown) }}
                                                                     @else
                                                                         -
+                                                                    @endif
+                                                                    @if(!empty( $data->hometown_city ))
+                                                                        , {{  ucwords($data->hometown_city) }}
+                                                                    @endif
+                                                                    @if(!empty( $data->hometown_state ))
+                                                                        , {{  ucwords($data->hometown_state) }}
+                                                                    @endif
+                                                                    @if(!empty( $data->hometown_region ))
+                                                                        , {{  ucwords($data->hometown_region) }}
                                                                     @endif
                                                                 </td>
                                                             </tr>

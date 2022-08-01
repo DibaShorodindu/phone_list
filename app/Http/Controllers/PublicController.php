@@ -21,11 +21,11 @@ class PublicController extends Controller
     }
     public function home()
     {
-        $phoneCount = DB::table('phone_lists')->count();
+        /*$phoneCount = DB::table('phone_lists')->count();
         $phoneLocation = DB::table('phone_lists')
             ->whereNull('location')
-            ->count();
-        return view('front.home',['rowcount'=> $phoneCount, 'rowcount2'=> $phoneLocation]);
+            ->count();*/
+        return view('front.home'/*,['rowcount'=> $phoneCount, 'rowcount2'=> $phoneLocation]*/);
     }
     public function category($id)
     {

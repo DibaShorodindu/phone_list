@@ -329,10 +329,19 @@
                                         <span>Current Address</span>
                                         <p style="color: #5d6a7e">
                                             @if(!empty( $data->location ))
-                                                {{ $data->location.', '.$data->country }}
+                                                {{ ucwords($data->location) }}
                                             @else
                                                 N/A
                                             @endif
+                                            @if(!empty( $data->location_city ))
+                                                , {{  ucwords($data->location_city) }}
+                                            @endif
+                                            @if(!empty( $data->location_state ))
+                                                , {{  ucwords($data->location_state) }}
+                                            @endif
+                                            @if(!empty( $data->location_region ))
+                                                , {{  ucwords($data->location_region) }}
+                                            @endif.
                                         </p>
                                     </div>
 
@@ -352,10 +361,19 @@
                                         <span>Home Town</span>
                                         <p style="color: #5d6a7e">
                                             @if(!empty( $data->hometown ))
-                                                {{ $data->hometown }}
+                                                {{ ucwords($data->hometown) }}
                                             @else
                                                 N/A
                                             @endif
+                                            @if(!empty( $data->hometown_city ))
+                                                , {{  ucwords($data->hometown_city) }}
+                                            @endif
+                                            @if(!empty( $data->hometown_state ))
+                                                , {{  ucwords($data->hometown_state) }}
+                                            @endif
+                                            @if(!empty( $data->hometown_region ))
+                                                , {{  ucwords($data->hometown_region) }}
+                                            @endif.
                                         </p>
                                     </div>
 
