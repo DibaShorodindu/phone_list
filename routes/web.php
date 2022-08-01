@@ -458,6 +458,8 @@ Route::get('userLogout',[
 
 Route::post('/payments/crypto/callback', [App\Http\Controllers\Admin\Payment\PaymentController::class, 'callback'])
     ->withoutMiddleware(['web', 'auth']);
+Route::post('/crypto/pay-now', [App\Http\Controllers\Admin\Payment\PaymentController::class, 'payNow'])->name('crypto.now-pay')
+    ->withoutMiddleware(['web', 'auth']);
 
 
 //Admin Dashboard

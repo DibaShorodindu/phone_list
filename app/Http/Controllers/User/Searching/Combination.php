@@ -24,18 +24,9 @@ class Combination extends Controller
 
     public function filter_data($request)
     {
-<<<<<<< HEAD
-        $getdownloadedIds = 0;
-        foreach ($this->allDataIds as $dataIds) {
-            $getdownloadedIds = $getdownloadedIds . ',' . $dataIds->downloadedIds;
-        }
-        $this->getdownloadedId = $getdownloadedIds;
-        //$query = DB::table('phone_lists')
-            $query = QueryBuilder::for(PhoneList::class)
-=======
+
         // $query = DB::table('phone_lists')
         $query = QueryBuilder::for(PhoneList::class)
->>>>>>> eac1522fe2a66841729a229b3b44273b6e5b1238
             ->whereNotIn('id', explode(',', $this->getdownloadedId));
 
         if ($request->name != null) {

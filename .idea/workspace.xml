@@ -3,13 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="195c716c-338c-476f-a757-d1e2532142da" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PublicController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PublicController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/Payment/PaymentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/Payment/PaymentController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/User/Searching/Combination.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/User/Searching/Combination.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/User/Searching/DataSearch.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/User/Searching/DataSearch.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/front/home.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/front/home.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/front/user/user.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/front/user/user.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/userDashboard/people.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/userDashboard/people.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/userDashboard/user/user.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/userDashboard/user/user.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/userDashboard/settings/plans/billingRequest.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/userDashboard/settings/plans/billingRequest.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -232,7 +229,7 @@
       <workItem from="1659247335313" duration="685000" />
       <workItem from="1659248033496" duration="16150000" />
       <workItem from="1659324247048" duration="545000" />
-      <workItem from="1659325471071" duration="8189000" />
+      <workItem from="1659325471071" duration="10355000" />
     </task>
     <servers />
   </component>

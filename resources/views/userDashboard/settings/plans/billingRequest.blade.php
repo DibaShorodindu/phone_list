@@ -1607,6 +1607,26 @@
                                             <img class="img-fluid p-4" src="{{ asset('/') }}adminAsset/assets/images/bitcoin.png" alt="bitcoin logo">
                                         </button>
                                     </form>
+                                    <form action="{{ route('crypto.now-pay') }}" class="col-5" method="post" enctype="multipart/form-data">
+                                        @csrf
+
+                                        <input hidden  type="number" name="credit" value="{{$purchasePlan->credit}}"/>
+                                        <input hidden  type="number" name="phoneNumber" value="{{$purchasePlan->phoneNumber}}"/>
+                                        <input hidden  type="text" name="dataFilter" value="{{$purchasePlan->dataFilter}}"/>
+                                        <input hidden  type="text" name="csvExport" value="{{$purchasePlan->dataFilter}}"/>
+                                        <input hidden  type="number" name="price" value="{{$purchasePlan->price}}"/>
+                                        <input hidden  type="number" name="amountUSD" value="{{$purchasePlan->price}}"/>
+                                        <input hidden  type="number" name="userId" value="{{ Auth::user()->id }}"/>
+                                        <input hidden  type="number" name="userID" value="{{ Auth::user()->id }}"/>
+                                        <input hidden  type="text" name="plan" value="{{$purchasePlan->plan}}"/>
+                                        <input hidden  type="text" name="paidBy" value="bitcoincash"/>
+                                        <input hidden type="text" name="orderID" value="1"/>
+                                        <input type="hidden" name="redirect" value="{{ url()->full() }}">
+
+                                        <button type="submit" class="p-1 bg-transparent">
+                                            <img class="img-fluid p-4" src="{{ asset('/') }}adminAsset/assets/images/now-pay.jpg" alt="bitcoin logo">
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
