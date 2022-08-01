@@ -155,6 +155,10 @@ Route::get('/customExport', [
     'uses' => '\App\Http\Controllers\User\Searching\DataSearch@customExport',
     'as' => 'customExport'
 ]);
+Route::get('/download-data', [
+    'uses' => '\App\Http\Controllers\User\Searching\DataSearch@downloadData',
+    'as' => 'download-data'
+]);
 
 
 

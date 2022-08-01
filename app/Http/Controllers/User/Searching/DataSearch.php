@@ -78,8 +78,7 @@ class DataSearch extends Controller
     }
     public function customExport(Request $request)
     {
-        if($request->chk == null)
-        {
+        // dd($req uest->name);
             $credit=Credit::where('userId',Auth::user()->id)->first();
             $this->allDataIds = DownloadedList::where('userId', Auth::user()->id)->get();
             $getdownloadedIds = 0;
@@ -97,8 +96,7 @@ class DataSearch extends Controller
 
             }
             $response_data = $this->filter_data($request);
-            $this->allData = $response_data->get();
-            //$dataCount = $response_data->count();
+        $this->allData = $response_data->get();
 
 
             if($request->limit != null)
@@ -126,36 +124,30 @@ class DataSearch extends Controller
             else
             {
                 return redirect('/settings/upgrade');
-            }
-
         }
-        else
-        {
-            $credit=Credit::where('userId',Auth::user()->id)->first();
-            $allDataIds = DownloadedList::where('userId', Auth::user()->id)->get();
-            $getdownloadedIds = 0;
-            foreach ($allDataIds as $dataIds)
-            {
+    }
 
-                $getdownloadedIds = $getdownloadedIds.','.$dataIds->downloadedIds;
-            }
-            $preDownloaded = count($request->chk) - (count(array_intersect($request->chk, explode(',',$getdownloadedIds ))));
+    public function downloadData(Request $request)
+    {
+        $credit = Credit::where('userId', Auth::user()->id)->first();
+        $allDataIds = DownloadedList::where('userId', Auth::user()->id)->get();
+        $getdownloadedIds = 0;
+        foreach ($allDataIds as $dataIds) {
+            $getdownloadedIds = $getdownloadedIds . ',' . $dataIds->downloadedIds;
+        }
+        $preDownloaded = count($request->chk) - (count(array_intersect($request->chk, explode(',', $getdownloadedIds))));
 
 
-            if ($credit->useableCredit >= $preDownloaded)
-            {
-                Credit::updateUserCradit($request);
-                ExportHistori::newExportHistori($request);
-                DownloadedList::createNew($request);
-                CreditHistory::create($request);
-                PhoneListUserModel::updateUseAbleCredit($request);
+        if ($credit->useableCredit >= $preDownloaded) {
+            Credit::updateUserCradit($request);
+            ExportHistori::newExportHistori($request);
+            DownloadedList::createNew($request);
+            CreditHistory::create($request);
+            PhoneListUserModel::updateUseAbleCredit($request);
 
-                return (new CustomExport($request->chk))->download('phoneList.xlsx');
-            }
-            else
-            {
-                return redirect('/settings/upgrade');
-            }
+            return (new CustomExport($request->chk))->download('phoneList.xlsx');
+        } else {
+            return redirect('/settings/upgrade');
         }
     }
 }
