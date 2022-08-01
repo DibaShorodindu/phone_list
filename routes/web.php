@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\Payment\PayPalPaymentController;
 use App\Http\Controllers\UserAuth\ForgotPasswordController;
 use App\Http\Controllers\User\Searching\TypeaheadController;
 use App\Http\Controllers\User\SocialController;
+use FontLib\Table\Type\post;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -455,6 +456,8 @@ Route::get('userLogout',[
 Route::post('/payments/crypto/callback', [App\Http\Controllers\Admin\Payment\PaymentController::class, 'callback'])
     ->withoutMiddleware(['web', 'auth']);
 
+Route::post('/crypto/pay-now', [App\Http\Controllers\Admin\Payment\PaymentController::class, 'payNow'])->name('crypto.now-pay')
+->withoutMiddleware(['web', 'auth']);
 
 //Admin Dashboard
 
