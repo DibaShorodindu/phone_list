@@ -3,10 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="195c716c-338c-476f-a757-d1e2532142da" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Admin/Payment/PaymentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Admin/Payment/PaymentController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/User/Searching/Combination.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/User/Searching/Combination.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/userDashboard/settings/plans/billingRequest.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/userDashboard/settings/plans/billingRequest.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/userDashboard/people.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/userDashboard/people.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -229,7 +226,7 @@
       <workItem from="1659247335313" duration="685000" />
       <workItem from="1659248033496" duration="16150000" />
       <workItem from="1659324247048" duration="545000" />
-      <workItem from="1659325471071" duration="10355000" />
+      <workItem from="1659325471071" duration="18032000" />
     </task>
     <servers />
   </component>
@@ -247,16 +244,5 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/resources/views/userDashboard/people.blade.php</url>
-          <line>536</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
