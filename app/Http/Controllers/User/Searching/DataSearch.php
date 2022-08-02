@@ -96,7 +96,7 @@ class DataSearch extends Controller
 
             }
             $response_data = $this->filter_data($request);
-        $this->allData = $response_data->get();
+            $this->allData = $response_data->get();
 
 
             if($request->limit != null)

@@ -103,7 +103,11 @@ class Combination extends Controller
 
         $this->countries = Country::all();
         $this->allDataIds = DownloadedList::where('userId', Auth::user()->id)->get();
-
+        $getdownloadedIds = 0;
+        foreach ($this->allDataIds as $dataIds) {
+            $getdownloadedIds = $getdownloadedIds . ',' . $dataIds->downloadedIds;
+        }
+        $this->getdownloadedId = $getdownloadedIds;
 
 
 

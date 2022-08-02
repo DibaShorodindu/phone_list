@@ -322,7 +322,7 @@ class UserController extends Controller
     public function people_search(Request $request)
     {
         $this->countries = Country::all();
-        $this->allData = QueryBuilder::for(PhoneList::class)
+        $query = QueryBuilder::for(PhoneList::class)
             ->select(
                 'id',
                 'first_name',
@@ -356,23 +356,11 @@ class UserController extends Controller
             ->orWhere('country', '=', $request->people)
             ->orWhere('gender', '=', $request->people)
             ->orWhere('relationship_status', '=', $request->people)
-            ->orWhere('age', 'like', '%/'.$request->people)
-            ->take(15)
-            ->get();
-
-        /*$query =  DB::table('phone_lists');
-        $query->where('full_name', 'like', '%'.$request->people.'%')
-            ->orWhere('location', 'like', '%'.$request->people.'%')
-            ->orWhere('hometown', 'like', '%'.$request->people.'%')
-            ->orWhere('country', '=', $request->people)
-            ->orWhere('gender', '=', $request->people)
-            ->orWhere('relationship_status', '=', $request->people)
             ->orWhere('age', 'like', '%/'.$request->people);
-        $this->allData = $query->orderBy('full_name', 'ASC')
-                                ->take(15)
-                                ->get();*/
+        $this->allData = $query->take(15)->get();
+        $dataCount = $query->count();
         return view('userDashboard.people', ['allData' => $this->allData, 'country' => $this->countries,
-            'people' => $request->people]);
+            'people' => $request->people, 'count'=>$dataCount ]);
     }
     public function people_gender($gender)
     {
@@ -382,15 +370,6 @@ class UserController extends Controller
             ->paginate(200);
         return view('front.gender', ['data'=>$this->data, 'country' => $this->countries])->with('dataId', $gender);
     }
-
-
-
-
-
-
-
-
-
     public function user($id)
     {
         $this->countries = Country::all();
@@ -400,8 +379,6 @@ class UserController extends Controller
 
         return view('userDashboard.user.user', ['data'=>$this->data, 'country' => $this->countries])->with('userData', $this->userData);
     }
-
-
     public function peopleSearchById($id)
     {
 
@@ -436,7 +413,6 @@ class UserController extends Controller
 
         }
     }
-
 
     public function peopleSearch(Request $request)
     {
